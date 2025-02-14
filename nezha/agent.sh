@@ -351,8 +351,6 @@ show_menu() {
     ${green}11.${plain} 卸载Agent
     ${green}12.${plain} 重启Agent
     ————————————————-
-    ${green}13.${plain} 更新脚本
-    ————————————————-
     ${green}0.${plain}  退出脚本
     "
     echo && printf "请输入选择 [0-13]: " && read -r num
