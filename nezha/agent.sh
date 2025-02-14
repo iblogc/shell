@@ -344,7 +344,6 @@ show_usage() {
 show_menu() {
     printf "
     ${green}哪吒监控Agent管理脚本${plain}
-    ${green}7.${plain}  卸载管理面板
     ————————————————-
     ${green}8.${plain}  安装监控Agent
     ${green}9.${plain}  修改Agent配置
