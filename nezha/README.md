@@ -5,3 +5,6 @@
 https://cdn.jsdelivr.net/gh/sky22333/shell@main/nezha/install.sh
 ```
 然后接着去vps安装即可
+
+
+> 旧版备份`https://cdn.jsdelivr.net/gh/sky22333/shell@main/nezha/agent.sh`
