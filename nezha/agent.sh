@@ -329,7 +329,7 @@ clean_all() {
 }
 
 show_usage() {
-    echo "哪吒监控 管理脚本使用方法: "
+    echo "哪吒监控v0.20.5管理脚本使用方法: "
     echo "--------------------------------------------------------"
     echo "./nezha.sh                            - 显示管理菜单"
     echo "--------------------------------------------------------"
@@ -343,7 +343,7 @@ show_usage() {
 
 show_menu() {
     printf "
-    ${green}哪吒监控Agent管理脚本${plain}
+    ${green}哪吒v0.20.5监控Agent管理脚本${plain}
     ————————————————-
     ${green}8.${plain}  安装监控Agent
     ${green}9.${plain}  修改Agent配置
