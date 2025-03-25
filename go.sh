@@ -1,7 +1,6 @@
 #!/bin/bash
 
 # Go 自动安装配置脚本 (适用于Debian/Ubuntu)
-# 使用方法: sudo bash install_go.sh [版本号]
 
 set -e
 
