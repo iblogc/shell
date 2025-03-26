@@ -65,7 +65,7 @@ fi
 sudo apt update -q
 
 # 安装必要的软件包
-sudo apt install -y -q mariadb-server php8.1 php8.1-mysql php8.1-fpm php8.1-curl php8.1-cgi php8.1-mbstring php8.1-xml php8.1-gd php8.1-xmlrpc php8.1-soap php8.1-intl php8.1-opcache php8.1-zip wget unzip socat curl caddy
+sudo apt install -yq mariadb-server php8.1 php8.1-mysql php8.1-fpm php8.1-curl php8.1-cgi php8.1-mbstring php8.1-xml php8.1-gd php8.1-xmlrpc php8.1-soap php8.1-intl php8.1-opcache php8.1-zip wget unzip socat curl caddy
 
 PHP_VERSION=$(php -r 'echo PHP_MAJOR_VERSION.".".PHP_MINOR_VERSION;')
 PHP_INI_FILE="/etc/php/${PHP_VERSION}/fpm/php.ini"
@@ -119,6 +119,13 @@ fi
 # 重启 PHP-FPM 服务
 sudo systemctl restart php${PHP_VERSION}-fpm
 
+if systemctl is-active --quiet apache2; then
+    sudo systemctl stop apache2
+    sudo systemctl disable apache2
+    sudo apt remove --purge apache2 -y
+else
+    echo -e "环境检查通过。"
+fi
 # 启动并启用 Caddy 服务
 sudo systemctl start caddy
 sudo systemctl enable caddy
