@@ -12,11 +12,9 @@ install_jq() {
     if ! command -v jq &> /dev/null; then
         echo "jq 未安装，正在安装 jq..."
         if [[ -f /etc/debian_version ]]; then
-            sudo apt-get update
-            sudo apt-get install -yq jq
+            sudo apt update && apt install -yq jq
         elif [[ -f /etc/redhat-release ]]; then
-            sudo yum install -y epel-release
-            sudo yum install -y jq
+            sudo yum install -y epel-release jq
         else
             echo "无法确定系统发行版，请手动安装 jq。"
             exit 1

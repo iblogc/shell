@@ -22,8 +22,7 @@ mirror_list_docker_ce=(
 # 格式："软件源名称@软件源地址"
 mirror_list_registry=(
     "毫秒镜像@docker.1ms.run"
-    "1panel镜像一@docker.1panel.live"
-    "1panel镜像二@proxy.1panel.live"
+    "1panel镜像@docker.1panel.live"
     "南京大学（ghcr）@ghcr.nju.edu.cn"
     "Docker官方@registry.hub.docker.com"
 )

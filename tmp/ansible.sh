@@ -1,10 +1,7 @@
 #!/bin/bash
 
-# 更新系统包索引
-sudo apt update
-
 # 安装 Ansible
-sudo apt install ansible -yq
+sudo apt update && apt install ansible -yq
 
 # 创建 Ansible 配置文件和目录
 mkdir -p /etc/ansible

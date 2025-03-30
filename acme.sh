@@ -11,8 +11,8 @@ install_requirements() {
     local os_type=$(grep '^ID=' /etc/os-release | cut -d'=' -f2)
 
     if [ "$os_type" == "ubuntu" ] || [ "$os_type" == "debian" ]; then
-        pkg_manager="apt-get"
-        install_cmd="apt-get install -y"
+        pkg_manager="apt"
+        install_cmd="apt install -y"
     elif [ "$os_type" == "centos" ]; then
         pkg_manager="yum"
         install_cmd="yum install -y"

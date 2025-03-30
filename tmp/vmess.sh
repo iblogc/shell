@@ -14,17 +14,17 @@ config_file="/usr/local/etc/xray/config.json"
 install_dependencies() {
     if ! type jq &>/dev/null; then
         echo -e "${green}正在安装 jq...${none}"
-        apt-get update && apt-get install -yq jq
+        apt update && apt install -yq jq
     fi
 
     if ! type uuidgen &>/dev/null; then
         echo -e "${green}正在安装 uuid-runtime...${none}"
-        apt-get install -yq uuid-runtime
+        apt install -yq uuid-runtime
     fi
 
     if ! type sshpass &>/dev/null; then
         echo -e "${green}正在安装 sshpass...${none}"
-        apt-get install -yq sshpass
+        apt install -yq sshpass
     fi
 
     if ! type xray &>/dev/null; then
