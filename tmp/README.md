@@ -9,7 +9,7 @@ touch /home/xray.txt
 三：然后再执行此脚本
 
 ```
-bash <(wget -qO- https://github.com/sky22333/shell/raw/main/tmp/ss.sh)
+bash <(curl -sSL https://github.com/sky22333/shell/raw/main/tmp/ss.sh)
 ```
 
 ---
@@ -112,7 +112,7 @@ curl -fsSL http://公网IP/my.sh -o my.sh && chmod +x my.sh && ./my.sh
 - ### ✨一键安装脚本
   
 ```
-bash <(wget -qO- https://github.com/sky22333/shell/raw/main/tmp/ansible.sh)
+bash <(curl -sSL https://github.com/sky22333/shell/raw/main/tmp/ansible.sh)
 ```
  
 ### 1：安装并创建配置文件
