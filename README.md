@@ -16,20 +16,20 @@ bash <(curl -sSL https://github.com/sky22333/shell/raw/main/docker.sh)
 - ###  一键自动部署异次元发卡
 > 适用于`Debian 11+` `Ubuntu 18.04+`系统    基于`Caddy` `php` `mariadb`环境
 ```
-bash <(wget -qO- https://github.com/sky22333/shell/raw/main/web/acgfaka.sh)
+bash <(curl -sSL https://github.com/sky22333/shell/raw/main/web/acgfaka.sh)
 ```
 
 - ### 一键自动安装WordPress
 > 适用于`Debian 11+` `Ubuntu 18.04+`系统    基于`Caddy` `php` `mariadb`环境
 ```
-bash <(wget -qO- https://github.com/sky22333/shell/raw/main/web/wp.sh)
+bash <(curl -sSL https://github.com/sky22333/shell/raw/main/web/wp.sh)
 ```
 
 
 - ###  acme.sh 证书一键申请脚本
 
 ```
-bash <(wget -qO- https://github.com/sky22333/shell/raw/main/acme.sh)
+bash <(curl -sSL https://github.com/sky22333/shell/raw/main/acme.sh)
 ```
 
 
@@ -39,19 +39,19 @@ bash <(wget -qO- https://github.com/sky22333/shell/raw/main/acme.sh)
 
 
 ```
-bash <(wget -qO- https://github.com/sky22333/shell/raw/main/vmess-sk5.sh)
+bash <(curl -sSL https://github.com/sky22333/shell/raw/main/vmess-sk5.sh)
 ```
 
 - ### Hysteria 2 一键搭建脚本
 
 
 ```
-bash <(wget -qO- https://github.com/sky22333/shell/raw/main/hy2/hysteria.sh)
+bash <(curl -sSL https://github.com/sky22333/shell/raw/main/hy2/hysteria.sh)
 ```
 
 - ### sing-box一键脚本（多协议）
 ```
-bash <(wget -qO- -o- https://github.com/admin8800/sing-box/raw/main/install.sh)
+bash <(curl -sSL https://github.com/admin8800/sing-box/raw/main/install.sh)
 ```
 > **使用`sing-box`命令查看管理菜单**
 
@@ -59,5 +59,5 @@ bash <(wget -qO- -o- https://github.com/admin8800/sing-box/raw/main/install.sh)
 - ###  端口限速脚本
 
 ```
-bash <(wget -qO- https://github.com/sky22333/shell/raw/main/Mbit.sh)
+bash <(curl -sSL https://github.com/sky22333/shell/raw/main/Mbit.sh)
 ```
