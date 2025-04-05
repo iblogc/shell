@@ -563,6 +563,6 @@ case ${action} in
         echo "      `basename $0` -h,--help   打印此帮助信息"
         ;;
     *)
-        echo "用法: `basename $0` [-l,--list|-a,--add|-d,--del|-m,--mod|-h,--help]" && exit
+        echo "用法: `basename $0` [-l,--查看用户|-a,--添加用户|-d,--删除用户|-m,--修改密码|-h,--帮助信息]" && exit
         ;;
 esac
