@@ -2,10 +2,10 @@
 # Debian/Ubuntu 内核切换脚本
 # 功能：从 Cloud 内核切换到标准内核
 # 适用：Debian 11+/Ubuntu 18.04+
-
+ 
 set -eo pipefail
 exec > >(tee -a "/var/log/kernel_switch_$(date +%F).log") 2>&1
-
+ 
 # --------------------------
 # 颜色定义 (用于醒目提示)
 # --------------------------
@@ -13,7 +13,7 @@ RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[0;33m'
 NC='\033[0m'
-
+ 
 # --------------------------
 # 安全锁机制 (防止重复运行)
 # --------------------------
@@ -25,7 +25,7 @@ if [ -f "$LOCK_FILE" ]; then
 fi
 trap 'rm -f $LOCK_FILE' EXIT
 touch "$LOCK_FILE"
-
+ 
 # --------------------------
 # 初始化检查
 # --------------------------
@@ -35,14 +35,14 @@ check_root() {
         exit 1
     fi
 }
-
+ 
 check_cloud_kernel() {
     if ! uname -r | grep -q 'cloud'; then
         echo -e "${GREEN}提示：系统已在标准内核运行 ($(uname -r))${NC}"
         exit 0
     fi
 }
-
+ 
 # --------------------------
 # 核心修复函数
 # --------------------------
@@ -59,20 +59,22 @@ purge_cloud_kernel() {
     else
         echo -e "${GREEN}提示：未找到 Cloud 内核包${NC}"
     fi
-    
-    # 防止 cloud-init 重新安装
-    if [ -f /etc/cloud/cloud.cfg.d/99-disable-kernel-updates.cfg ]; then
-        echo "cloud-init 已禁用内核更新"
+}
+ 
+ck_cloud_kernel() {
+    echo -e "${YELLOW}步骤2/4：锁定 Cloud 内核...${NC}"
+
+    # 检查是否存在 Cloud 内核包，如果有则标记为 hold
+    cloud_kernels=$(apt list --installed 2>/dev/null | grep -i 'linux-image' | grep -i 'cloud' | cut -d'/' -f1)
+
+    if [ -n "$cloud_kernels" ]; then
+        echo "找到以下 Cloud 内核包，正在锁定：$cloud_kernels"
+        apt-mark hold $cloud_kernels
     else
-        echo -e "cloud_init_modules:\n - migrator\n - seed_random\n - bootcmd\n - write-files\n - growpart\n - resizefs\n - set_hostname\n - update_hostname\n - update_etc_hosts\n - ca-certs\n - rsyslog\n - ssh" > /etc/cloud/cloud.cfg.d/99-disable-kernel-updates.cfg
+        echo -e "${GREEN}提示：未找到任何 Cloud 内核包，跳过锁定步骤。${NC}"
     fi
 }
-
-lock_cloud_kernel() {
-    echo -e "${YELLOW}步骤2/4：锁定 Cloud 内核...${NC}"
-    apt-mark hold $(apt list --installed 2>/dev/null | grep linux-image | grep cloud | cut -d'/' -f1)
-}
-
+ 
 force_install_standard() {
     echo -e "${YELLOW}步骤3/4：安装标准内核...${NC}"
     
@@ -84,7 +86,7 @@ force_install_standard() {
         image_pkg="linux-image-generic"
         headers_pkg="linux-headers-generic"
     fi
-
+ 
     # 强制安装并跳过配置提问
     DEBIAN_FRONTEND=noninteractive apt install -y --reinstall --allow-downgrades \
         "$image_pkg" "$headers_pkg"
@@ -93,7 +95,7 @@ force_install_standard() {
     local std_kernel=$(ls /boot/vmlinuz-* | grep -v cloud | sort -V | tail -1 | sed 's|/boot/vmlinuz-||')
     update-initramfs -u -k "$std_kernel"
 }
-
+ 
 nuclear_grub_update() {
     echo -e "${YELLOW}步骤4/4：重建 GRUB...${NC}"
     
@@ -111,7 +113,7 @@ GRUB_CMDLINE_LINUX=""
 GRUB_DISABLE_OS_PROBER=true
 GRUB_DISABLE_RECOVERY=true
 EOF
-
+ 
     # 完全重建配置
     grub-mkconfig -o /boot/grub/grub.cfg
     
@@ -125,7 +127,7 @@ EOF
         grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=debian --recheck
     fi
 }
-
+ 
 # --------------------------
 # 主执行流程
 # --------------------------
@@ -152,6 +154,6 @@ main() {
     # 添加成功标记
     touch /root/.kernel_switch_success
 }
-
+ 
 # 执行主函数
 main "$@"
