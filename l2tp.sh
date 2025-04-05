@@ -215,41 +215,11 @@ preinstall_l2tp(){
 
 }
 
+# 安装依赖
 install_l2tp(){
-
     mknod /dev/random c 1 9
-
     apt -y update
-
-    # 安装基础依赖
-    apt -yq install curl wget gcc ppp flex bison make python3 libnss3-dev libnss3-tools libselinux-dev iptables \
-                     libnspr4-dev pkg-config libpam0g-dev libcap-ng-dev libcap-ng-utils libunbound-dev \
-                     libevent-dev libcurl4-nss-dev libsystemd-dev xmlto xl2tpd
-
-    # 安装libreswan
-    apt -yq install libreswan
-
-    # 如果系统自带libreswan版本太旧，则从源码编译安装
-    if ! ipsec --version &>/dev/null; then
-        echo "系统自带的libreswan版本太旧或不存在，将从源码编译安装..."
-        apt -yq install libnss3-dev libnspr4-dev libpam0g-dev libcap-ng-dev \
-                         libcap-ng-utils libunbound-dev libevent-dev libcurl4-nss-dev \
-                         libsystemd-dev bison flex gcc make
-        
-        # 从官方源下载最新稳定版libreswan
-        wget -O /tmp/libreswan.tar.gz https://download.libreswan.org/libreswan-3.32.tar.gz
-        tar -C /tmp -xzf /tmp/libreswan.tar.gz
-        cd /tmp/libreswan-*
-        
-        # 编译安装
-        make programs && make install
-        
-        if ! ipsec --version &>/dev/null; then
-            echo "libreswan安装失败，请检查错误。"
-            exit 1
-        fi
-    fi
-
+    apt -yq install curl wget ppp xl2tpd libreswan
     config_install
 }
 
