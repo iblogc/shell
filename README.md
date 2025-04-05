@@ -59,5 +59,11 @@ bash <(curl -sSL https://github.com/admin8800/sing-box/raw/main/install.sh)
 - ###  端口限速脚本
 
 ```
-bash <(curl -sSL https://github.com/sky22333/shell/raw/main/Mbit.sh)
+bash <(curl -sSL https://github.com/sky22333/shell/raw/main/mbit.sh)
+```
+
+- ###  一键安装L2TP
+
+```
+bash <(curl -sSL https://github.com/sky22333/shell/raw/main/l2tp.sh)
 ```
