@@ -409,13 +409,8 @@ EOF
 }
 
 finally(){
-
-    cd ${cur_dir}
-    # create l2tp command
-    cp -f ${cur_dir}/`basename $0` /usr/bin/l2tp
-
     echo "请稍候..."
-    sleep 5
+    sleep 3
     ipsec verify
     echo
     echo "###############################################################"
@@ -430,10 +425,10 @@ finally(){
     echo "密码    : ${password}"
     echo
     echo "如果您想修改用户设置，请使用以下命令:"
-    echo "l2tp -a (添加用户)"
-    echo "l2tp -d (删除用户)"
-    echo "l2tp -l (列出所有用户)"
-    echo "l2tp -m (修改用户密码)"
+    echo "-a (添加用户)"
+    echo "-d (删除用户)"
+    echo "-l (列出所有用户)"
+    echo "-m (修改用户密码)"
     echo
 }
 
@@ -556,13 +551,13 @@ case ${action} in
         mod_user
         ;;
     -h|--help)
-        echo "用法: `basename $0` -l,--list   列出所有用户"
-        echo "      `basename $0` -a,--add    添加用户"
-        echo "      `basename $0` -d,--del    删除用户"
-        echo "      `basename $0` -m,--mod    修改用户密码"
-        echo "      `basename $0` -h,--help   打印此帮助信息"
+        echo "用法:  -l,--list   列出所有用户"
+        echo "       -a,--add    添加用户"
+        echo "       -d,--del    删除用户"
+        echo "       -m,--mod    修改用户密码"
+        echo "       -h,--help   打印此帮助信息"
         ;;
     *)
-        echo "用法: `basename $0` [-l,--查看用户|-a,--添加用户|-d,--删除用户|-m,--修改密码|-h,--帮助信息]" && exit
+        echo "用法: [-l,--查看用户|-a,--添加用户|-d,--删除用户|-m,--修改密码|-h,--帮助信息]" && exit
         ;;
 esac
