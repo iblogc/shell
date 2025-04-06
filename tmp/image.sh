@@ -2,18 +2,12 @@
 # Debian/Ubuntu 内核切换脚本
 # 功能：从 Cloud 内核切换到标准内核
 # 适用：Debian 11+/Ubuntu 18.04+
- 
-# --------------------------
-# 颜色定义 (用于醒目提示)
-# --------------------------
+
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[0;33m'
 NC='\033[0m'
 
-# --------------------------
-# 初始化检查
-# --------------------------
 check_root() {
     if [ "$(id -u)" -ne 0 ]; then
         echo -e "${RED}错误：必须使用 root 权限运行此脚本${NC}"
@@ -28,9 +22,6 @@ check_cloud_kernel() {
     fi
 }
 
-# --------------------------
-# 核心修复函数
-# --------------------------
 purge_cloud_kernel() {
     echo -e "${YELLOW}步骤1/4：彻底移除 Cloud 内核...${NC}"
     
@@ -113,15 +104,10 @@ EOF
     fi
 }
 
-# --------------------------
-# 主执行流程
-# --------------------------
 main() {
-    echo -e "\n${GREEN}=== Debian/Ubuntu 内核切换脚本 ===${NC}"
-    echo -e "开始时间: $(date)\n"
-    
+    echo -e "\n${GREEN}=== Debian/Ubuntu 内核切换脚本 ===${NC}"   
     check_root
-    check_cloud_kernel  # 检查是否在标准内核运行，如果是，退出脚本
+    check_cloud_kernel
     
     # 执行核心修复步骤
     purge_cloud_kernel
@@ -134,10 +120,8 @@ main() {
     echo -e "请重启系统："
     echo -e "1. 重启系统: ${YELLOW}reboot${NC}"
     echo -e "2. 检查内核: ${YELLOW}uname -r${NC}"
-    
-    # 添加成功标记
+
     touch /root/.kernel_switch_success
 }
- 
-# 执行主函数
+
 main "$@"
