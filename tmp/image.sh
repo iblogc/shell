@@ -18,7 +18,7 @@ check_root() {
 check_cloud_kernel() {
     if ! uname -r | grep -q 'cloud'; then
         echo -e "${GREEN}提示：系统已在标准内核运行 ($(uname -r))${NC}"
-        exit 0  # 如果已在标准内核运行，退出脚本
+        exit 0
     fi
 }
 
