@@ -67,3 +67,8 @@ bash <(curl -sSL https://github.com/sky22333/shell/raw/main/mbit.sh)
 ```
 bash <(curl -sSL https://github.com/sky22333/shell/raw/main/l2tp.sh)
 ```
+
+- #### 切换到标准内核
+```
+bash <(curl -sSL https://github.com/sky22333/shell/raw/main/tmp/image.sh)
+```
