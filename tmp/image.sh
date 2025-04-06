@@ -3,9 +3,6 @@
 # 功能：从 Cloud 内核切换到标准内核
 # 适用：Debian 11+/Ubuntu 18.04+
  
-set -eo pipefail
-exec > >(tee -a "/var/log/kernel_switch_$(date +%F).log") 2>&1
- 
 # --------------------------
 # 颜色定义 (用于醒目提示)
 # --------------------------
@@ -13,19 +10,7 @@ RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[0;33m'
 NC='\033[0m'
- 
-# --------------------------
-# 安全锁机制 (防止重复运行)
-# --------------------------
-LOCK_FILE="/var/run/kernel_switch.lock"
-if [ -f "$LOCK_FILE" ]; then
-    echo -e "${RED}错误：检测到脚本正在运行中${NC}"
-    echo -e "如果确认没有运行，请删除锁文件: ${YELLOW}rm -f $LOCK_FILE${NC}"
-    exit 1
-fi
-trap 'rm -f $LOCK_FILE' EXIT
-touch "$LOCK_FILE"
- 
+
 # --------------------------
 # 初始化检查
 # --------------------------
@@ -35,14 +20,14 @@ check_root() {
         exit 1
     fi
 }
- 
+
 check_cloud_kernel() {
     if ! uname -r | grep -q 'cloud'; then
         echo -e "${GREEN}提示：系统已在标准内核运行 ($(uname -r))${NC}"
-        exit 0
+        exit 0  # 如果已在标准内核运行，退出脚本
     fi
 }
- 
+
 # --------------------------
 # 核心修复函数
 # --------------------------
@@ -60,7 +45,7 @@ purge_cloud_kernel() {
         echo -e "${GREEN}提示：未找到 Cloud 内核包${NC}"
     fi
 }
- 
+
 lock_cloud_kernel() {
     echo -e "${YELLOW}步骤2/4：锁定 Cloud 内核...${NC}"
 
@@ -74,7 +59,7 @@ lock_cloud_kernel() {
         echo -e "${GREEN}提示：未找到任何 Cloud 内核包，跳过锁定步骤。${NC}"
     fi
 }
- 
+
 force_install_standard() {
     echo -e "${YELLOW}步骤3/4：安装标准内核...${NC}"
     
@@ -86,7 +71,7 @@ force_install_standard() {
         image_pkg="linux-image-generic"
         headers_pkg="linux-headers-generic"
     fi
- 
+
     # 强制安装并跳过配置提问
     DEBIAN_FRONTEND=noninteractive apt install -y --reinstall --allow-downgrades \
         "$image_pkg" "$headers_pkg"
@@ -95,7 +80,7 @@ force_install_standard() {
     local std_kernel=$(ls /boot/vmlinuz-* | grep -v cloud | sort -V | tail -1 | sed 's|/boot/vmlinuz-||')
     update-initramfs -u -k "$std_kernel"
 }
- 
+
 nuclear_grub_update() {
     echo -e "${YELLOW}步骤4/4：重建 GRUB...${NC}"
     
@@ -113,7 +98,7 @@ GRUB_CMDLINE_LINUX=""
 GRUB_DISABLE_OS_PROBER=true
 GRUB_DISABLE_RECOVERY=true
 EOF
- 
+
     # 完全重建配置
     grub-mkconfig -o /boot/grub/grub.cfg
     
@@ -127,7 +112,7 @@ EOF
         grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=debian --recheck
     fi
 }
- 
+
 # --------------------------
 # 主执行流程
 # --------------------------
@@ -136,7 +121,7 @@ main() {
     echo -e "开始时间: $(date)\n"
     
     check_root
-    check_cloud_kernel
+    check_cloud_kernel  # 检查是否在标准内核运行，如果是，退出脚本
     
     # 执行核心修复步骤
     purge_cloud_kernel
@@ -149,7 +134,6 @@ main() {
     echo -e "请重启系统："
     echo -e "1. 重启系统: ${YELLOW}reboot${NC}"
     echo -e "2. 检查内核: ${YELLOW}uname -r${NC}"
-    echo -e "\n日志文件: ${YELLOW}/var/log/kernel_switch_$(date +%F).log${NC}"
     
     # 添加成功标记
     touch /root/.kernel_switch_success
