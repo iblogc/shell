@@ -40,7 +40,7 @@ purge_cloud_kernel() {
 lock_cloud_kernel() {
     echo -e "${YELLOW}步骤2/4：锁定 Cloud 内核...${NC}"
 
-    # 检查是否存在 Cloud 内核包，如果有则标记为 hold
+    # 检查是否还有额外的 Cloud 内核包，如果有则标记为 hold
     cloud_kernels=$(apt list --installed 2>/dev/null | grep -i 'linux-image' | grep -i 'cloud' | cut -d'/' -f1)
 
     if [ -n "$cloud_kernels" ]; then
@@ -117,7 +117,7 @@ main() {
     
     # 最终验证
     echo -e "\n${GREEN}=== 操作完成 ===${NC}"
-    echo -e "请重启系统："
+    echo -e "请手动重启系统："
     echo -e "1. 重启系统: ${YELLOW}reboot${NC}"
     echo -e "2. 检查内核: ${YELLOW}uname -r${NC}"
 
