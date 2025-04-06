@@ -61,7 +61,7 @@ purge_cloud_kernel() {
     fi
 }
  
-ck_cloud_kernel() {
+lock_cloud_kernel() {
     echo -e "${YELLOW}步骤2/4：锁定 Cloud 内核...${NC}"
 
     # 检查是否存在 Cloud 内核包，如果有则标记为 hold
@@ -107,7 +107,7 @@ nuclear_grub_update() {
     cat > /etc/default/grub <<'EOF'
 GRUB_DEFAULT=0
 GRUB_TIMEOUT=5
-GRUB_DISTRIBUTOR=`lsb_release -i -s 2> /dev/null || echo Debian`
+GRUB_DISTRIBUTOR=lsb_release -i -s 2> /dev/null || echo Debian
 GRUB_CMDLINE_LINUX_DEFAULT="quiet"
 GRUB_CMDLINE_LINUX=""
 GRUB_DISABLE_OS_PROBER=true
