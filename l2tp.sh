@@ -188,8 +188,8 @@ preinstall_l2tp(){
     fi
     echo
     echo "请输入IP范围:"
-    read -p "(默认范围: 10.8.0):" iprange
-    [ -z ${iprange} ] && iprange="10.8.0"
+    read -p "(默认范围: 192.168.18):" iprange
+    [ -z ${iprange} ] && iprange="192.168.18"
 
     echo "请输入PSK密钥:"
     read -p "(默认PSK: admin123@l2tp):" mypsk
@@ -233,7 +233,7 @@ config setup
     nhelpers=0
     uniqueids=no
     interfaces=%defaultroute
-    virtual_private=%v4:10.0.0.0/8,%v4:10.100.0.0/16,%v4:172.16.0.0/12,%v4:!${iprange}.0/24
+    virtual_private=%v4:10.0.0.0/8,%v4:192.168.0.0/16,%v4:172.16.0.0/12,%v4:!${iprange}.0/24
 
 conn l2tp-psk
     rightsubnet=vhost:%priv
