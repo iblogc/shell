@@ -188,8 +188,8 @@ preinstall_l2tp(){
     fi
     echo
     echo "请输入IP范围:"
-    read -p "(默认范围: 192.168.200):" iprange
-    [ -z ${iprange} ] && iprange="192.168.200"
+    read -p "(默认范围: 10.8.0):" iprange
+    [ -z ${iprange} ] && iprange="10.8.0"
 
     echo "请输入PSK密钥:"
     read -p "(默认PSK: admin123@l2tp):" mypsk
