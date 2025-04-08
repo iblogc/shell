@@ -27,33 +27,22 @@ cat <<EOL > renwu.yml
 ---
 # 定义要执行任务的主机组
 - hosts: myservers
-  become: yes   
+  become: yes
+  gather_facts: no  # 禁用事实收集以避免依赖 Python
   tasks:
-    - name: 更新包列表
-      apt:
-        update_cache: yes
-
-    - name: 安装所需的软件包
-      apt:
-        name:
-          - curl
-          - wget
-          - zip
-          - tar
-        state: present
-
     - name: 将脚本复制到远程主机
       copy:
         # 本地脚本路径
-        src: /etc/ansible/ss.sh
+        src: ./proxy.sh
         # 远程主机上的目标路径
-        dest: /tmp/ss.sh  
+        dest: /tmp/ss.sh
         # 设置脚本权限为可执行
-        mode: '0755'  
+        mode: '0755'
 
     - name: 在远程主机上执行脚本
-      shell: /tmp/ss.sh  # 在远程主机上执行脚本
+      raw: /tmp/ss.sh  # 在远程主机上执行脚本
 EOL
+
 
 # 输出成功信息
 echo "Ansible 配置文件和任务文件已成功创建并配置完成。"
