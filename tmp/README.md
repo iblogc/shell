@@ -3,8 +3,8 @@
 
 - 下载环境
 ```
-sudo apt-get update
-sudo apt-get install shc gcc -y
+sudo apt update
+sudo apt install shc gcc -yq
 ```
 
 - 用法
