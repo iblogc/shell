@@ -1,4 +1,6 @@
 #### proxy.sh脚本可添加的节点信息
+
+带TLS的需要交互
 ```
 TUIC
 Trojan
