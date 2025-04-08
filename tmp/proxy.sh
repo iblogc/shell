@@ -6,7 +6,7 @@ REMOTE_PORT="22"                         # 目标主机的 SSH 端口，默认�
 REMOTE_PASS="your_ssh_password"            # 目标主机的 SSH 密码
 REMOTE_FILE="/home/proxy.txt"              # 远程主机上存储节点链接的文件路径
 
-ADD_NODE_CMD="VLESS-REALITY"               # 添加节点的命令（VLESS-REALITY）
+ADD_NODE_CMD="VLESS-REALITY"               # 添加节点的协议参数
 NODE_PREFIX="vless://"                     # 提取节点链接的前缀
 
 # 运行节点脚本
