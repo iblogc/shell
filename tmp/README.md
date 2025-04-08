@@ -1,79 +1,75 @@
-### 自用批量搭建节点并把节点信息传输到另一台机器
-
-一：先在脚本变量中填入目标服务器信息
-
-二：目标主机需在`home`目录下创建`xray.txt`文件
+#### proxy.sh脚本可添加的节点信息
 ```
-touch /home/xray.txt
-```
-三：然后再执行此脚本
-
-```
-bash <(curl -sSL https://github.com/sky22333/shell/raw/main/tmp/ss.sh)
-```
-
----
-
-- 其他命令
-
-```
-# 查看 Xray 状态
-systemctl status xray
-
-# 停止 Xray 服务
-systemctl stop xray
-
-# 禁用 Xray 服务和开机自启
-systemctl disable xray
-
-# 删除 Xray 二进制文件
-rm -f /usr/local/bin/xray
-
-# 删除 Xray 配置文件及相关目录
-rm -rf /usr/local/etc/xray
+TUIC
+Trojan
+Hysteria2
+VMess-WS
+VMess-TCP
+VMess-HTTP
+VMess-QUIC
+Shadowsocks
+VMess-H2-TLS
+VMess-WS-TLS
+VLESS-H2-TLS
+VLESS-WS-TLS
+Trojan-H2-TLS
+Trojan-WS-TLS
+VMess-HTTPUpgrade-TLS
+VLESS-HTTPUpgrade-TLS
+Trojan-HTTPUpgrade-TLS
+VLESS-REALITY
+VLESS-HTTP2-REALITY
+Socks
 ```
 
----
----
+#### proxy.sh脚本快捷命令
+```
+基本:
+   ip                                              返回当前主机的 IP
+   pbk                                             同等于 sing-box generate reality-keypair
+   get-port                                        返回一个可用的端口
+   ss2022                                          返回一个可用于 Shadowsocks 2022 的密码
 
-## 🔵自托管脚本
-- 创建脚本文件
-```
-mkdir -p /var/www && touch /var/www/shell.sh && chmod 644 /var/www/shell.sh
+一般:
+   a, add [protocol] [args... | auto]              添加配置
+   c, change [name] [option] [args... | auto]      更改配置
+   d, del [name]                                   删除配置**
+   i, info [name]                                  查看配置
+   url [name]                                      URL 信息
+   log                                             查看日志
+更改:
+   full [name] [...]                               更改多个参数
+   id [name] [uuid | auto]                         更改 UUID
+   host [name] [domain]                            更改域名
+   port [name] [port | auto]                       更改端口
+   path [name] [path | auto]                       更改路径
+   passwd [name] [password | auto]                 更改密码
+   key [name] [Private key | atuo] [Public key]    更改密钥
+   method [name] [method | auto]                   更改加密方式
+   sni [name] [ ip | domain]                       更改 serverName
+   new [name] [...]                                更改协议
+   web [name] [domain]                             更改伪装网站
+
+进阶:
+   dns [...]                                       设置 DNS
+   dd, ddel [name...]                              删除多个配置**
+   fix [name]                                      修复一个配置
+   fix-all                                         修复全部配置
+   fix-caddyfile                                   修复 Caddyfile
+   fix-config.json                                 修复 config.json
+   import                                          导入 sing-box/v2ray 脚本配置
+
+管理:
+   un, uninstall                                   卸载
+   u, update [core | sh | caddy] [ver]             更新
+   U, update.sh                                    更新脚本
+   s, status                                       运行状态
+   start, stop, restart [caddy]                    启动, 停止, 重启
+   t, test                                         测试运行
+   reinstall                                       重装脚本
+
 ```
 
-- 一键安装caddy
-```
-sudo apt install -y debian-keyring debian-archive-keyring apt-transport-https curl && curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' | sudo gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg && curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' | sudo tee /etc/apt/sources.list.d/caddy-stable.list && sudo apt update && sudo apt install -y caddy
-```
-- `/etc/caddy/Caddyfile`写入配置文件
-
-> 也可以直接使用域名
-```
-http://IP:80 {
-    root * /var/www
-    file_server
-}
-```
-- 启动运行
-```
-sudo systemctl restart caddy
-```
-- 查看状态
-```
-systemctl status caddy
-```
-- 停止和卸载
-```
-sudo systemctl stop caddy && sudo apt-get purge --auto-remove caddy
-```
-
-
-- 用户远程运行脚本
-```
-bash <(curl -fsSL http://公网IP/shell.sh)
-```
----
 ---
 
 ## 🔵脚本加密-编译为可执行文件
