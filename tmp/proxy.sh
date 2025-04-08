@@ -2,7 +2,7 @@
 # 变量定义
 REMOTE_USER="root"                         # 目标主机的 SSH 用户名
 REMOTE_HOST="192.168.0.2"                  # 目标主机的 IP 地址或域名
-REMOTE_PORT="2222"                         # 目标主机的 SSH 端口，默认是 22，如果是其他端口可以修改
+REMOTE_PORT="22"                         # 目标主机的 SSH 端口，默认是 22，如果是其他端口可以修改
 REMOTE_PASS="your_ssh_password"            # 目标主机的 SSH 密码
 REMOTE_FILE="/home/proxy.txt"              # 远程主机上存储节点链接的文件路径
 
