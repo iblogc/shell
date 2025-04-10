@@ -6,9 +6,9 @@ install_jq() {
     if ! command -v jq &> /dev/null; then
         echo "jq 未安装，正在安装 jq..."
         if [[ -f /etc/debian_version ]]; then
-            sudo apt update && apt install -yq jq
+            apt update && apt install -yq jq
         elif [[ -f /etc/redhat-release ]]; then
-            sudo yum install -y epel-release jq
+            yum install -y epel-release jq
         else
             echo "无法确定系统发行版，请手动安装 jq。"
             exit 1
@@ -33,6 +33,14 @@ install_xray() {
 
 get_public_ipv4() {
     ip -4 addr show | grep inet | grep -vE "127\.|10\.|172\.(1[6-9]|2[0-9]|3[0-1])\.|192\.168\.|169\.254" | awk '{print $2}' | cut -d'/' -f1
+}
+
+# 确保 vmess.txt 文件存在，如果不存在则创建
+ensure_vmess_file() {
+    if [ ! -f /home/vmess.txt ]; then
+        echo "vmess.txt 文件不存在，正在创建..."
+        touch /home/vmess.txt
+    fi
 }
 
 print_node_links() {
@@ -118,6 +126,7 @@ restart_xray() {
 }
 
 main() {
+    ensure_vmess_file
     install_jq
     install_xray
     configure_xray
