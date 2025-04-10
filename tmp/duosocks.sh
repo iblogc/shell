@@ -41,6 +41,14 @@ get_public_ipv4() {
     ip -4 addr show | grep inet | grep -vE "127\.|10\.|172\.(1[6-9]|2[0-9]|3[0-1])\.|192\.168\.|169\.254" | awk '{print $2}' | cut -d'/' -f1
 }
 
+# 确保 socks.txt 文件存在，如果不存在则创建
+ensure_socks_file_exists() {
+    if [ ! -f /home/socks.txt ]; then
+        echo "socks.txt 文件不存在，正在创建..."
+        touch /home/socks.txt
+    fi
+}
+
 print_node_info() {
     local ip=$1
     local port=$2
@@ -48,13 +56,16 @@ print_node_info() {
     local username=$3
     local password=$4
     echo -e " IP: \033[32m$ip\033[0m 端口: \033[32m$port\033[0m 用户名: \033[32m$username\033[0m 密码: \033[32m$password\033[0m"
+    
+    # 保存节点信息到文件
+    echo "$ip $port $username $password" >> /home/socks.txt
 }
 
 configure_xray() {
     public_ips=($(get_public_ipv4))
     
     if [[ ${#public_ips[@]} -eq 0 ]]; then
-        echo "未找到任何公网 IPv4 地址，退出..."
+        echo "未找到额外IP地址，退出..."
         exit 1
     fi
     
@@ -127,11 +138,12 @@ restart_xray() {
 }
 
 main() {
+    ensure_socks_file_exists
     install_jq
     install_xray
     configure_xray
     restart_xray
-    echo "部署完成。"
+    echo "部署完成，所有节点信息已保存到 /home/socks.txt"
 }
 
 main
