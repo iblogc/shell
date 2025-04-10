@@ -44,6 +44,7 @@ get_public_ipv4() {
 print_node_info() {
     local ip=$1
     local port=$2
+    # 此处用户名和密码可以改为固定值
     local username=$3
     local password=$4
     echo -e " IP: \033[32m$ip\033[0m 端口: \033[32m$port\033[0m 用户名: \033[32m$username\033[0m 密码: \033[32m$password\033[0m"
@@ -77,6 +78,7 @@ EOF
         echo "正在配置 IP: $ip 端口: $port"
         
         id=$(uuidgen)
+        # 此处用户名和密码可以改为固定值
         username=$(generate_random_string)
         password=$(generate_random_string)
 
