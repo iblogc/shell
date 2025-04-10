@@ -3,18 +3,19 @@
 # 作者sky22333
 
 install_jq() {
-    if ! command -v jq &> /dev/null; then
-        echo "jq 未安装，正在安装 jq..."
+    # 检查 jq 和 uuidgen 是否已安装
+    if ! command -v jq &> /dev/null || ! command -v uuidgen &> /dev/null; then
+        echo "未找到 jq 或 uuidgen，正在安装依赖..."
         if [[ -f /etc/debian_version ]]; then
-            apt update && apt install -yq jq
+            apt update && apt install -yq jq uuid-runtime
         elif [[ -f /etc/redhat-release ]]; then
-            yum install -y epel-release jq
+            yum install -y jq util-linux
         else
-            echo "无法确定系统发行版，请手动安装 jq。"
+            echo "无法确定系统发行版，请手动安装 jq 和 uuid-runtime。"
             exit 1
         fi
     else
-        echo "jq 已安装。"
+        echo "jq 和 uuidgen 都已安装。"
     fi
 }
 
