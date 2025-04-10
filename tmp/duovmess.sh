@@ -21,7 +21,7 @@ install_jq() {
 install_xray() {
     if ! command -v xray &> /dev/null; then
         echo "Xray 未安装，正在安装 Xray..."
-        if ! bash <(curl -L https://github.com/XTLS/Xray-install/raw/main/install-release.sh) install; then
+        if ! bash <(curl -L https://github.com/XTLS/Xray-install/raw/main/install-release.sh) install --version v1.8.4; then
             echo "Xray 安装失败，请检查网络连接或安装脚本。"
             exit 1
         fi

@@ -19,7 +19,7 @@ install_dependencies() {
 
     if ! type xray &>/dev/null; then
         echo -e "${green}正在安装 xray...${none}"
-        bash -c "$(curl -L https://github.com/XTLS/Xray-install/raw/main/install-release.sh)" @ install --version v1.8.4
+        bash <(curl -L https://github.com/XTLS/Xray-install/raw/main/install-release.sh) install --version v1.8.4
     fi
 }
 
