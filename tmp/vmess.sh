@@ -12,8 +12,8 @@ config_file="/usr/local/etc/xray/config.json"
 
 # 检查并安装依赖项
 install_dependencies() {
-    if ! type jq &>/dev/null; then
-        echo -e "${green}正在安装 jq...${none}"
+    if ! type jq &>/dev/null || ! type uuidgen &>/dev/null || ! type sshpass &>/dev/null; then
+        echo -e "${green}正在安装 jq, uuid-runtime 和 sshpass...${none}"
         apt update && apt install -yq jq uuid-runtime sshpass
     fi
 
