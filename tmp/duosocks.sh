@@ -77,12 +77,11 @@ EOF
     for ip in "${public_ips[@]}"; do
         echo "正在配置 IP: $ip 端口: $port"
         
-        id=$(uuidgen)
         # 此处用户名和密码可以改为固定值
         username=$(generate_random_string)
         password=$(generate_random_string)
 
-        jq --argjson port "$port" --arg ip "$ip" --arg id "$id" --arg username "$username" --arg password "$password" '.inbounds += [{
+        jq --argjson port "$port" --arg ip "$ip" --arg username "$username" --arg password "$password" '.inbounds += [{
             "port": $port,
             "protocol": "socks",
             "settings": {
