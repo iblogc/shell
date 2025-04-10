@@ -1,3 +1,9 @@
+#### 卸载xray
+```
+bash -c "$(curl -L https://github.com/XTLS/Xray-install/raw/main/install-release.sh)" @ remove --purge
+```
+
+
 
 ## 🔵脚本加密-编译为可执行文件
 
