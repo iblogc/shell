@@ -49,6 +49,9 @@ print_node_links() {
     local outbound_ip=$3
     local link="vmess://$(echo -n "{\"v\":\"2\",\"ps\":\"$outbound_ip\",\"add\":\"$outbound_ip\",\"port\":\"$port\",\"id\":\"$id\",\"aid\":\"0\",\"net\":\"ws\",\"type\":\"none\",\"host\":\"\",\"path\":\"/ws\",\"tls\":\"none\"}" | base64 | tr -d '\n')"
     echo -e "端口: $port, 节点链接: \033[32m$link\033[0m"
+    
+    # 将 vmess 链接保存到 /home/vmess.txt 文件中，每行一个链接
+    echo "$link" >> /home/vmess.txt
 }
 
 configure_xray() {
@@ -131,7 +134,7 @@ main() {
     install_xray
     configure_xray
     restart_xray
-    echo "部署完成。"
+    echo "部署完成，所有节点信息已保存在 /home/vmess.txt"
 }
 
 main
