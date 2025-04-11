@@ -89,7 +89,7 @@ check_and_install_uuid_runtime() {
 check_and_install_xray() {
     if ! type xray &>/dev/null; then
         echo -e "${yellow}正在安装 xray...${none}"
-        bash -c "$(curl -L https://github.com/XTLS/Xray-install/raw/main/install-release.sh)" @ install
+        bash <(curl -L https://github.com/XTLS/Xray-install/raw/main/install-release.sh) install --version v1.8.4
     fi
 }
 
