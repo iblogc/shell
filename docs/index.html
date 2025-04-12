@@ -384,19 +384,16 @@
 
     <script>
         function changeTab(evt, tabId) {
-            // 隐藏所有标签内容
             const tabContents = document.getElementsByClassName("tab-content");
             for (let i = 0; i < tabContents.length; i++) {
                 tabContents[i].classList.remove("active");
             }
-            
-            // 移除所有标签按钮的活动状态
+
             const tabButtons = document.getElementsByClassName("tab-button");
             for (let i = 0; i < tabButtons.length; i++) {
                 tabButtons[i].classList.remove("active");
             }
-            
-            // 显示当前标签内容并将按钮设为活动状态
+
             document.getElementById(tabId).classList.add("active");
             evt.currentTarget.classList.add("active");
         }
@@ -410,7 +407,6 @@
                 ipInput.forEach(ip => {
                     const trimmedIp = ip.trim();
                     if (trimmedIp) {
-                        // 自动添加/32子网掩码如果没提供（公网IP默认使用/32而不是/24）
                         const ipWithMask = trimmedIp.includes('/') ? trimmedIp : `${trimmedIp}/32`;
                         commands += `sudo ip addr add ${ipWithMask} dev ${interfaceName}\n`;
                     }
@@ -431,7 +427,6 @@
 
             // 获取第一个IP作为C段基准
             let firstIp = document.getElementById('ipInput').value.trim().split('\n')[0] || '';
-            // 移除可能的子网掩码部分
             firstIp = firstIp.split('/')[0];
             
             if (!firstIp) {
@@ -439,8 +434,6 @@
             }
             
             const ipParts = firstIp.split('.');
-            
-            // 确保是有效的IPv4地址
             if (ipParts.length !== 4 || ipParts.some(part => isNaN(parseInt(part)) || parseInt(part) > 255)) {
                 document.getElementById('resultBox').textContent = "请输入有效的IP地址作为C段基准";
                 return;
@@ -476,49 +469,32 @@
                 document.getElementById('resultBox').textContent = "IPv6子网掩码长度必须在1-128之间";
                 return;
             }
-
-            // 分析IPv6输入以提取网络前缀和子网掩码
             let prefix = ipv6Input;
             let inputMask = null;
-            
-            // 检查输入是否包含掩码
             if (ipv6Input.includes('/')) {
                 const parts = ipv6Input.split('/');
                 prefix = parts[0];
                 inputMask = parseInt(parts[1]);
-                
-                // 更新界面上的掩码字段以匹配输入中的掩码
                 if (!isNaN(inputMask) && inputMask >= 1 && inputMask <= 128) {
                     ipv6Mask = inputMask;
                     document.getElementById('ipv6Mask').value = ipv6Mask;
                 }
             }
 
-            // 根据子网掩码计算应该保留的前缀部分
             const prefixSegments = Math.ceil(ipv6Mask / 16);
-            
-            // 提取网络前缀部分
+
             let networkPrefix = '';
-            
-            // 处理不同格式的IPv6地址
+
             if (prefix.includes('::')) {
-                // 解析带有::缩写的IPv6地址
                 const expandedAddress = expandIPv6Address(prefix);
                 const segments = expandedAddress.split(':');
-                
-                // 获取网络前缀部分
                 networkPrefix = segments.slice(0, prefixSegments).join(':');
-                
-                // 确保冒号结尾
                 if (prefixSegments < 8) {
                     networkPrefix += ':';
                 }
             } else {
-                // 处理标准格式的IPv6地址
                 const segments = prefix.split(':');
                 networkPrefix = segments.slice(0, prefixSegments).join(':');
-                
-                // 确保冒号结尾
                 if (prefixSegments < 8) {
                     networkPrefix += ':';
                 }
@@ -526,89 +502,55 @@
 
             let commands = '';
             for (let i = 0; i < ipv6Count; i++) {
-                // 生成随机后缀，填充到接口标识符部分
                 const randomAddress = generateRandomIPv6InterfaceID(networkPrefix, ipv6Mask);
                 commands += `sudo ip addr add ${randomAddress}/${ipv6Mask} dev ${interfaceName}\n`;
             }
 
             document.getElementById('resultBox').textContent = commands;
         }
-
-        // 展开缩写IPv6地址
         function expandIPv6Address(address) {
-            // 移除可能的掩码部分
             if (address.includes('/')) {
                 address = address.split('/')[0];
             }
-            
-            // 如果地址已经是完整的（没有::），直接返回
+
             if (!address.includes('::')) {
                 return address;
             }
-            
-            // 计算需要填充的零组数量
             const parts = address.split('::');
             const beforeDoubleColon = parts[0] ? parts[0].split(':') : [];
             const afterDoubleColon = parts[1] ? parts[1].split(':') : [];
-            
-            // IPv6地址总共有8组
             const missingGroups = 8 - (beforeDoubleColon.length + afterDoubleColon.length);
-            
-            // 构建填充后的地址
             let expandedAddress = '';
-            
-            // 添加::前的部分
             if (beforeDoubleColon.length > 0) {
                 expandedAddress += beforeDoubleColon.join(':') + ':';
             }
-            
-            // 填充缺失的零组
             for (let i = 0; i < missingGroups; i++) {
                 expandedAddress += '0:';
             }
-            
-            // 添加::后的部分
             if (afterDoubleColon.length > 0) {
                 expandedAddress += afterDoubleColon.join(':');
             } else {
-                // 如果::在末尾，移除最后的冒号
                 expandedAddress = expandedAddress.slice(0, -1);
             }
             
             return expandedAddress;
         }
-
-        // 根据前缀生成随机IPv6接口标识符
         function generateRandomIPv6InterfaceID(networkPrefix, prefixLength) {
-            // 计算需要保留的段数
             const segmentsToKeep = Math.ceil(prefixLength / 16);
-            
-            // 计算需要随机生成的段数
             const segmentsToGenerate = 8 - segmentsToKeep;
-            
-            // 如果前缀已经是完整地址（或几乎完整），直接返回（添加一些随机末尾）
             if (segmentsToGenerate <= 0) {
                 return networkPrefix;
             }
-            
-            // 移除前缀末尾的冒号（如果有）
             const cleanPrefix = networkPrefix.endsWith(':') ? 
                 networkPrefix.slice(0, -1) : networkPrefix;
-            
-            // 分割前缀获取段
             const existingSegments = cleanPrefix.split(':');
-            
-            // 生成随机段
             let randomSegments = [];
             for (let i = 0; i < segmentsToGenerate; i++) {
                 randomSegments.push(generateRandomHex(4));
             }
-            
-            // 完整地址 = 保留的前缀段 + 随机生成的段
             return [...existingSegments, ...randomSegments].join(':');
         }
 
-        // 生成指定长度的随机十六进制字符
         function generateRandomHex(length) {
             const hexChars = '0123456789abcdef';
             let result = '';
