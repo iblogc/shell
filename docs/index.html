@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>公网IP地址添加命令生成器</title>
+    <title>IP地址命令生成器</title>
     <style>
         :root {
             --primary: #4f46e5;
@@ -346,7 +346,7 @@
                     <div class="flex-row">
                         <div class="flex-col">
                             <label for="ipv6Count">生成IPv6地址数量</label>
-                            <input type="number" id="ipv6Count" value="5" min="1" max="100" />
+                            <input type="number" id="ipv6Count" value="10" min="1" max="100" />
                         </div>
                         <div class="flex-col">
                             <label for="ipv6Mask">子网掩码长度</label>
@@ -461,7 +461,7 @@
             }
 
             if (isNaN(ipv6Count) || ipv6Count < 1 || ipv6Count > 100) {
-                document.getElementById('resultBox').textContent = "IPv6地址数量必须在1-100之间";
+                document.getElementById('resultBox').textContent = "IPv6一次最多生成100个";
                 return;
             }
 
