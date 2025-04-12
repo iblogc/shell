@@ -1,4 +1,7 @@
 #!/bin/bash
+# 批量搭建vmess+ws入站到sk5出站代理
+# 读取sk5文件实现批量导入出站
+# 作者sky22333
 
 red='\e[31m'
 yellow='\e[33m'
