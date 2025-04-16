@@ -77,7 +77,7 @@ check_and_install_openssl() {
 
 check_and_install_xray() {
     if ! type xray &>/dev/null; then
-        echo -e "${yellow}正在安装 xray...正在启用BBR...${none}"
+        echo -e "${yellow}正在安装 xray...${none}"
         sudo ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
         bash <(curl -L https://github.com/XTLS/Xray-install/raw/main/install-release.sh) install --version v1.8.13
     fi
