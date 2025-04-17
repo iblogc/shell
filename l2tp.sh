@@ -409,6 +409,7 @@ EOF
 }
 
 finally(){
+    cp -f ${cur_dir}/l2tp.sh /usr/bin/l2tp 2>/dev/null || true
     echo "请稍候..."
     sleep 3
     ipsec verify
