@@ -53,7 +53,7 @@ bash <(curl -sSL https://github.com/sky22333/shell/raw/main/hy2/hysteria.sh)
 ```
 bash <(curl -sSL https://cdn.jsdelivr.net/gh/admin8800/sing-box@main/install.sh)
 ```
-> **使用`sing-box`命令查看管理菜单**
+> **使用`sb`命令查看管理菜单**
 
 
 - ###  端口限速脚本
