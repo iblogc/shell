@@ -51,7 +51,7 @@ bash <(curl -sSL https://github.com/sky22333/shell/raw/main/hy2/hysteria.sh)
 
 - ### sing-box一键脚本（多协议）
 ```
-bash <(curl -sSL https://github.com/admin8800/sing-box/raw/main/install.sh)
+bash <(curl -sSL https://cdn.jsdelivr.net/gh/admin8800/sing-box@main/install.sh)
 ```
 > **使用`sing-box`命令查看管理菜单**
 
