@@ -1,35 +1,28 @@
 #!/bin/bash
-
 # Go 自动安装配置脚本 (适用于Debian/Ubuntu)
 
 set -e
 
-# 颜色定义
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
-NC='\033[0m' # 重置颜色
+NC='\033[0m'
 
-# 检查系统类型
 if ! grep -qiE 'debian|ubuntu' /etc/os-release; then
     echo -e "${RED}错误：本脚本仅适用于Debian/Ubuntu系统${NC}"
     exit 1
 fi
 
-# 检查是否以 root 运行
 if [ "$(id -u)" -ne 0 ]; then
     echo -e "${RED}请使用 sudo 或以 root 用户运行此脚本${NC}"
     exit 1
 fi
 
-# 默认版本
 DEFAULT_VERSION="1.24.0"
 
-# 获取用户输入版本
 read -p "请输入要安装的 Go 版本 [默认: ${DEFAULT_VERSION}]: " GO_VERSION
 GO_VERSION=${GO_VERSION:-$DEFAULT_VERSION}
 
-# 验证版本格式
 if ! [[ "$GO_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
     echo -e "${RED}错误：版本号格式不正确，请使用类似 1.24.0 的格式${NC}"
     exit 1
@@ -38,7 +31,6 @@ fi
 GO_TAR="go${GO_VERSION}.linux-amd64.tar.gz"
 GO_URL="https://dl.google.com/go/${GO_TAR}"
 
-# 检查是否已安装Go
 if command -v go &>/dev/null; then
     echo -e "${YELLOW}检测到已安装Go，当前版本: $(go version)${NC}"
     read -p "是否要卸载当前版本? (y/n): " -n 1 -r
@@ -56,7 +48,6 @@ if command -v go &>/dev/null; then
     fi
 fi
 
-# 下载Go
 echo -e "${YELLOW}检查是否存在旧的安装包...${NC}"
 cd /tmp
 if [ -f "${GO_TAR}" ]; then
@@ -72,12 +63,10 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-# 安装Go
 echo -e "${GREEN}安装 Go 到 /usr/local...${NC}"
 rm -rf /usr/local/go
 tar -C /usr/local -xzf "${GO_TAR}"
 
-# 配置环境变量
 echo -e "${GREEN}配置环境变量...${NC}"
 cat >> /etc/profile <<EOF
 
@@ -101,7 +90,6 @@ EOF
     fi
 done
 
-# 创建GOPATH目录
 echo -e "${GREEN}创建 GOPATH 目录...${NC}"
 for USER_HOME in /home/* /root; do
     if [ -d "${USER_HOME}" ]; then
@@ -110,10 +98,8 @@ for USER_HOME in /home/* /root; do
     fi
 done
 
-# 立即生效环境变量
 source /etc/profile
 
-# 验证安装
 echo -e "${GREEN}验证安装...${NC}"
 if ! command -v go &>/dev/null; then
     echo -e "${RED}Go 安装失败，请检查错误信息${NC}"
