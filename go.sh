@@ -24,7 +24,7 @@ read -p "请输入要安装的 Go 版本 [默认: ${DEFAULT_VERSION}]: " GO_VERS
 GO_VERSION=${GO_VERSION:-$DEFAULT_VERSION}
 
 if ! [[ "$GO_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-    echo -e "${RED}错误：版本号格式不正确，请使用类似 1.24.0 的格式${NC}"
+    echo -e "${RED}错误：版本号格式不正确，版本号可在 https://golang.org/dl 查看${NC}"
     exit 1
 fi
 
