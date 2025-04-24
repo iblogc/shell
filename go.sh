@@ -4,11 +4,11 @@
 
 set -e
 
-# 颜色函数
+# 颜色定义
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
-NC='\033[0m' # 无色
+NC='\033[0m' # 重置颜色
 
 # 检查系统类型
 if ! grep -qiE 'debian|ubuntu' /etc/os-release; then
@@ -16,9 +16,9 @@ if ! grep -qiE 'debian|ubuntu' /etc/os-release; then
     exit 1
 fi
 
-# 检查是否以root运行
+# 检查是否以 root 运行
 if [ "$(id -u)" -ne 0 ]; then
-    echo -e "${RED}请使用sudo或以root用户运行此脚本${NC}"
+    echo -e "${RED}请使用 sudo 或以 root 用户运行此脚本${NC}"
     exit 1
 fi
 
@@ -57,28 +57,28 @@ if command -v go &>/dev/null; then
 fi
 
 # 下载Go
-echo -e "${GREEN}下载Go ${GO_VERSION}...${NC}"
+echo -e "${YELLOW}检查是否存在旧的安装包...${NC}"
 cd /tmp
 if [ -f "${GO_TAR}" ]; then
-    echo -e "${YELLOW}发现已下载的Go安装包，跳过下载${NC}"
-else
-    wget --progress=bar:force "${GO_URL}"
-    if [ $? -ne 0 ]; then
-        echo -e "${RED}下载失败，请检查网络连接和版本号是否正确${NC}"
-        echo "可用的Go版本可在 https://golang.org/dl/ 查看"
-        exit 1
-    fi
+    echo -e "${YELLOW}删除旧的安装包：${GO_TAR}${NC}"
+    rm -f "${GO_TAR}"
+fi
+
+echo -e "${GREEN}开始下载 Go ${GO_VERSION} 安装包...${NC}"
+wget --progress=bar:force "${GO_URL}"
+if [ $? -ne 0 ]; then
+    echo -e "${RED}下载失败，请检查网络连接和版本号是否正确${NC}"
+    echo "可用的Go版本可在 https://golang.org/dl/ 查看"
+    exit 1
 fi
 
 # 安装Go
-echo -e "${GREEN}安装Go到 /usr/local...${NC}"
+echo -e "${GREEN}安装 Go 到 /usr/local...${NC}"
 rm -rf /usr/local/go
 tar -C /usr/local -xzf "${GO_TAR}"
 
 # 配置环境变量
 echo -e "${GREEN}配置环境变量...${NC}"
-
-# 系统级配置
 cat >> /etc/profile <<EOF
 
 # GoLang Environment
@@ -87,7 +87,6 @@ export GOPATH=\$HOME/go
 export PATH=\$GOROOT/bin:\$GOPATH/bin:\$PATH
 EOF
 
-# 用户级配置
 for USER_HOME in /home/* /root; do
     USER=$(basename "${USER_HOME}")
     if [ -d "${USER_HOME}" ]; then
@@ -103,7 +102,7 @@ EOF
 done
 
 # 创建GOPATH目录
-echo -e "${GREEN}创建GOPATH目录...${NC}"
+echo -e "${GREEN}创建 GOPATH 目录...${NC}"
 for USER_HOME in /home/* /root; do
     if [ -d "${USER_HOME}" ]; then
         mkdir -p "${USER_HOME}/go"{,/bin,/pkg,/src}
@@ -117,20 +116,20 @@ source /etc/profile
 # 验证安装
 echo -e "${GREEN}验证安装...${NC}"
 if ! command -v go &>/dev/null; then
-    echo -e "${RED}Go安装失败，请检查错误信息${NC}"
+    echo -e "${RED}Go 安装失败，请检查错误信息${NC}"
     exit 1
 fi
 
-echo -e "${GREEN}Go安装成功！版本信息:${NC}"
+echo -e "${GREEN}Go 安装成功！版本信息:${NC}"
 go version
 
 echo -e "
 ${GREEN}安装完成！Go ${GO_VERSION} 已成功安装并配置。${NC}
 
 ${YELLOW}提示:
-1. 新终端会话会自动加载Go环境变量
+1. 新终端会话会自动加载 Go 环境变量
 2. 当前会话可执行 ${NC}${GREEN}source ~/.profile${NC}${YELLOW} 立即生效
-3. Go工作目录(GOPATH)已创建在 ${NC}${GREEN}~/go${NC}
+3. Go 工作目录 (GOPATH) 已创建在 ${NC}${GREEN}~/go${NC}
 
-如需卸载，请删除 ${NC}/usr/local/go${YELLOW} 目录并移除 ${NC}/etc/profile${YELLOW} 和 ${NC}~/.profile${YELLOW} 中的Go环境变量${NC}
+如需卸载，请删除 ${NC}/usr/local/go${YELLOW} 目录${NC}
 "
