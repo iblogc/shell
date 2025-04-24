@@ -131,5 +131,5 @@ ${YELLOW}提示:
 2. 当前会话可执行 ${NC}${GREEN}source ~/.profile${NC}${YELLOW} 立即生效
 3. Go 工作目录 (GOPATH) 已创建在 ${NC}${GREEN}~/go${NC}
 
-如需卸载，请删除 ${NC}/usr/local/go${YELLOW} 目录${NC}
+如需卸载，请删除 ${YELLOW}/usr/local/go${NC} 目录。
 "
