@@ -68,7 +68,11 @@ bash <(curl -sSL https://github.com/sky22333/shell/raw/main/mbit.sh)
 bash <(curl -sSL https://github.com/sky22333/shell/raw/main/l2tp.sh)
 ```
 
-- #### 切换到标准内核
+> Linux切换到标准内核：`bash <(curl -sSL https://github.com/sky22333/shell/raw/main/tmp/image.sh)`
+
+
+
+- ### gost中转脚本
 ```
-bash <(curl -sSL https://github.com/sky22333/shell/raw/main/tmp/image.sh)
+bash <(curl -sSL https://raw.githubusercontent.com/sky22333/shell/main/gost/gost.sh)
 ```
