@@ -90,20 +90,20 @@ function Install_ct() {
 
   # 下载和安装 gost
   rm -rf gost-linux-"$bit"-"$ct_new_ver".gz
-  wget --no-check-certificate "${gh_proxy_prefix}https://github.com/ginuerzh/gost/releases/download/v${ct_new_ver}/gost-linux-${bit}-${ct_new_ver}.gz"
+  wget -q --no-check-certificate "${gh_proxy_prefix}https://github.com/ginuerzh/gost/releases/download/v${ct_new_ver}/gost-linux-${bit}-${ct_new_ver}.gz"
   gunzip gost-linux-"$bit"-"$ct_new_ver".gz
   mv gost-linux-"$bit"-"$ct_new_ver" gost
   mv gost /usr/bin/gost
   chmod -R 777 /usr/bin/gost
 
   # 下载 systemd 启动服务文件
-  wget --no-check-certificate "${gh_proxy_prefix}https://raw.githubusercontent.com/sky22333/shell/main/gost/gost.service"
+  wget -q --no-check-certificate "${gh_proxy_prefix}https://raw.githubusercontent.com/sky22333/shell/main/gost/gost.service"
   chmod -R 777 gost.service
   mv gost.service /usr/lib/systemd/system
 
   # 下载默认配置文件
   mkdir -p /etc/gost
-  wget --no-check-certificate "${gh_proxy_prefix}https://raw.githubusercontent.com/sky22333/shell/main/gost/config.json"
+  wget -q --no-check-certificate "${gh_proxy_prefix}https://raw.githubusercontent.com/sky22333/shell/main/gost/config.json"
   mv config.json /etc/gost
   chmod -R 777 /etc/gost
 
@@ -115,7 +115,7 @@ function Install_ct() {
     echo "gost安装成功"
     rm -rf "$(pwd)/gost" "$(pwd)/gost.service" "$(pwd)/config.json"
   else
-    echo "gost没有安装成功"
+    echo "gost安装失败"
     rm -rf "$(pwd)/gost" "$(pwd)/gost.service" "$(pwd)/config.json" "$(pwd)/gost.sh"
   fi
 }
