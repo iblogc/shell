@@ -78,11 +78,11 @@ function Install_ct() {
   gh_proxy_prefix=""
   if [[ "$loc" == "CN" ]]; then
     echo -e "检测到服务器位于中国大陆，GitHub 下载可能较慢。"
-    read -e -p "是否使用 GitHub 加速代理？直接回车默认使用 https://gh-proxy.com [y/n]:" use_proxy
+    read -e -p "是否使用 GitHub 加速代理？ [y/n]:" use_proxy
     [[ -z $use_proxy ]] && use_proxy="y"
 
     if [[ $use_proxy == [Yy] ]]; then
-      read -e -p "请输入加速前缀（默认：https://gh-proxy.com）:" input_proxy
+      read -e -p "请输入加速域名（回车使用内置加速域名：https://gh-proxy.com）:" input_proxy
       [[ -z $input_proxy ]] && input_proxy="https://gh-proxy.com"
       gh_proxy_prefix="${input_proxy}/"
     fi
