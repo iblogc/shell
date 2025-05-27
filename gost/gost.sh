@@ -119,7 +119,7 @@ function Uninstall_ct() {
   rm -rf /usr/bin/gost
   rm -rf /usr/lib/systemd/system/gost.service
   rm -rf /etc/gost
-  rm -rf "$(pwd)"/gost.sh
+  systemctl daemon-reload
   echo "gost已经成功删除"
 }
 function Start_ct() {
