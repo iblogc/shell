@@ -48,7 +48,7 @@ function check_root() {
   [[ $EUID != 0 ]] && echo -e "${Error} 当前非root用户，无法继续操作，请使用root权限运行此脚本。" && exit 1
 }
 function check_new_ver() {
-    ct_new_ver="2.11.2"
+    ct_new_ver="2.12.0"
     echo -e "${Info}当前下载 gost 版本为 ${ct_new_ver}"
 }
 function check_file() {
@@ -879,7 +879,7 @@ echo && echo -e "                 gost 一键安装配置脚本" "
  ${Green_font_prefix}9.${Font_color_suffix} gost定时重启配置
  ${Green_font_prefix}10.${Font_color_suffix} 自定义TLS证书配置
 ————————————" && echo
-read -e -p " 请输入数字 [1-9]:" num
+read -e -p " 请输入数字 [1-10]:" num
 case "$num" in
 1)
   Install_ct
