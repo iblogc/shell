@@ -1,15 +1,15 @@
 - ###  1：一键切换系统源脚本
 ```
-bash <(curl -sSL https://github.com/sky22333/shell/raw/main/mirrors.sh)
+bash <(curl -sSL https://github.com/sky22333/shell/raw/main/dev/mirrors.sh)
 ```
 - 切换官方系统源
 ```
-bash <(curl -sSL https://github.com/sky22333/shell/raw/main/mirrors.sh) --use-official-source true
+bash <(curl -sSL https://github.com/sky22333/shell/raw/main/dev/mirrors.sh) --use-official-source true
 ```
 
 - ###  2：一键安装Docker和配置镜像地址
 ```
-bash <(curl -sSL https://github.com/sky22333/shell/raw/main/docker.sh)
+bash <(curl -sSL https://github.com/sky22333/shell/raw/main/dev/docker.sh)
 ```
 
 
@@ -29,7 +29,7 @@ bash <(curl -sSL https://github.com/sky22333/shell/raw/main/web/wp.sh)
 - ### 5：acme.sh 证书一键申请脚本
 
 ```
-bash <(curl -sSL https://github.com/sky22333/shell/raw/main/acme.sh)
+bash <(curl -sSL https://github.com/sky22333/shell/raw/main/dev/acme.sh)
 ```
 
 
@@ -39,7 +39,7 @@ bash <(curl -sSL https://github.com/sky22333/shell/raw/main/acme.sh)
 
 
 ```
-bash <(curl -sSL https://github.com/sky22333/shell/raw/main/vmess-sk5.sh)
+bash <(curl -sSL https://github.com/sky22333/shell/raw/main/proxy/vmess-sk5.sh)
 ```
 
 - ### 7：Hysteria 2 一键搭建脚本
@@ -59,16 +59,16 @@ bash <(curl -sSL https://cdn.jsdelivr.net/gh/admin8800/sing-box@main/install.sh)
 - ###  9：端口限速脚本
 
 ```
-bash <(curl -sSL https://github.com/sky22333/shell/raw/main/mbit.sh)
+bash <(curl -sSL https://github.com/sky22333/shell/raw/main/dev/mbit.sh)
 ```
 
 - ###  10：一键安装L2TP
 
 ```
-bash <(curl -sSL https://github.com/sky22333/shell/raw/main/l2tp.sh)
+bash <(curl -sSL https://github.com/sky22333/shell/raw/main/proxy/l2tp.sh)
 ```
 
-> Linux切换到标准内核：`bash <(curl -sSL https://github.com/sky22333/shell/raw/main/tmp/image.sh)`
+> Linux切换到标准内核：`bash <(curl -sSL https://github.com/sky22333/shell/raw/main/dev/image.sh)`
 
 
 

@@ -1,8 +1,3 @@
-#### 卸载xray
-```
-bash -c "$(curl -L https://github.com/XTLS/Xray-install/raw/main/install-release.sh)" @ remove --purge
-```
-
 
 
 ## 🔵脚本加密-编译为可执行文件
@@ -41,7 +36,7 @@ curl -fsSL http://公网IP/my.sh -o my.sh && chmod +x my.sh && ./my.sh
 - ### ✨一键安装脚本
   
 ```
-bash <(curl -sSL https://github.com/sky22333/shell/raw/main/tmp/ansible.sh)
+bash <(curl -sSL https://github.com/sky22333/shell/raw/main/dev/ansible.sh)
 ```
  
 ### 1：安装并创建配置文件
