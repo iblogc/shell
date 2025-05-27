@@ -447,6 +447,9 @@ function cdn() {
     exit
   fi
 }
+function status() {
+  systemctl status gost
+}
 function cert() {
   echo -e "-----------------------------------"
   echo -e "[1] ACME一键申请证书"
@@ -874,8 +877,9 @@ echo && echo -e "                 gost 一键安装配置脚本" "
 ————————————
  ${Green_font_prefix}9.${Font_color_suffix} gost定时重启配置
  ${Green_font_prefix}10.${Font_color_suffix} 自定义TLS证书配置
+ ${Green_font_prefix}11.${Font_color_suffix} 查看gost运行状态
 ————————————" && echo
-read -e -p " 请输入数字 [1-10]:" num
+read -e -p " 请输入数字 [1-11]:" num
 case "$num" in
 1)
   Install_ct
@@ -926,6 +930,9 @@ case "$num" in
   ;;
 10)
   cert
+  ;;
+11)
+  status
   ;;
 *)
   echo "请输入正确数字 [1-9]"
