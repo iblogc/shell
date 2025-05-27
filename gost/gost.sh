@@ -47,10 +47,7 @@ function Installation_dependency() {
 function check_root() {
   [[ $EUID != 0 ]] && echo -e "${Error} 当前非root用户，无法继续操作，请使用root权限运行此脚本。" && exit 1
 }
-function check_new_ver() {
-    ct_new_ver="2.11.2"
-    echo -e "${Info}当前下载 gost 版本为 ${ct_new_ver}"
-}
+
 function check_file() {
   if test ! -d "/usr/lib/systemd/system/"; then
     mkdir /usr/lib/systemd/system
@@ -71,7 +68,6 @@ function Install_ct() {
   Installation_dependency
   check_file
   check_sys
-  # check_new_ver
 
   loc=$(curl -s https://www.cloudflare.com/cdn-cgi/trace | grep 'loc=' | cut -d= -f2)
 
