@@ -1,3 +1,9 @@
+### 一键安装ansible
+
+见 [ansible.md](./ansible.md)
+
+---
+
 ### 常用运维脚本
 
 - 一键切换系统源脚本
