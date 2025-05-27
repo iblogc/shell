@@ -1,3 +1,7 @@
+- [Github文件加速](https://yishijie.gitlab.io/ziyuan/)
+
+---
+
 - Linux一键更换系统源脚本
 ```
 bash <(curl -sSL https://github.com/sky22333/shell/raw/main/dev/mirrors.sh)
