@@ -90,7 +90,7 @@ function Install_ct() {
 
   # 下载和安装 gost
   rm -rf gost-linux-"$bit"-"$ct_new_ver".gz
-  wget -nv --no-check-certificate "${gh_proxy_prefix}https://github.com/ginuerzh/gost/releases/download/v${ct_new_ver}/gost-linux-${bit}-${ct_new_ver}.gz"
+  curl --progress-bar -L -o gost-linux-"${bit}"-"${ct_new_ver}".gz "${gh_proxy_prefix}https://github.com/ginuerzh/gost/releases/download/v${ct_new_ver}/gost-linux-${bit}-${ct_new_ver}.gz"
   gunzip gost-linux-"$bit"-"$ct_new_ver".gz
   mv gost-linux-"$bit"-"$ct_new_ver" gost
   mv gost /usr/bin/gost
