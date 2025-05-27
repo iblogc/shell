@@ -33,12 +33,6 @@ bash <(curl -sSL https://github.com/sky22333/shell/raw/main/dev/acme.sh)
 ```
 
 
-- Hysteria 2 一键搭建脚本
-
-```
-bash <(curl -sSL https://github.com/sky22333/shell/raw/main/hy2/hysteria.sh)
-```
-
 - sing-box一键脚本（多协议）
 ```
 bash <(curl -sSL https://cdn.jsdelivr.net/gh/admin8800/sing-box@main/install.sh)
