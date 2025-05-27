@@ -26,3 +26,14 @@ bash <(curl -sSL https://github.com/sky22333/shell/raw/main/dev/acme.sh)
 ```
 bash <(curl -sSL https://github.com/sky22333/shell/raw/main/dev/image.sh)
 ```
+
+- 一键安装go环境：
+```
+bash <(curl -sSL https://github.com/sky22333/shell/raw/main/dev/go.sh)
+```
+
+
+- 一键启用BBR：
+```
+bash <(curl -sSL https://github.com/sky22333/shell/raw/main/dev/bbr.sh)
+```
