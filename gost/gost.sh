@@ -4,7 +4,7 @@
 Green_font_prefix="\033[32m" && Red_font_prefix="\033[31m" && Green_background_prefix="\033[42;37m" && Font_color_suffix="\033[0m"
 Info="${Green_font_prefix}[信息]${Font_color_suffix}"
 Error="${Red_font_prefix}[错误]${Font_color_suffix}"
-ct_new_ver="2.11.2" # 使用固定版本
+ct_new_ver="2.11.2" # 使用固定的稳定版本
 gost_conf_path="/etc/gost/config.json"
 raw_conf_path="/etc/gost/rawconf"
 
@@ -39,8 +39,8 @@ function Installation_dependency() {
       yum update
       yum install -y gzip wget
     else
-      apt-get update
-      apt-get install -y gzip wget
+      apt update
+      apt install -y gzip wget
     fi
   fi
 }
@@ -51,7 +51,7 @@ function check_root() {
 function check_file() {
   if test ! -d "/usr/lib/systemd/system/"; then
     mkdir /usr/lib/systemd/system
-    chmod -R 777 /usr/lib/systemd/system
+    chmod -R 755 /usr/lib/systemd/system
   fi
 }
 function check_nor_file() {
@@ -90,18 +90,18 @@ function Install_ct() {
   gunzip gost-linux-"$bit"-"$ct_new_ver".gz
   mv gost-linux-"$bit"-"$ct_new_ver" gost
   mv gost /usr/bin/gost
-  chmod -R 777 /usr/bin/gost
+  chmod -R 755 /usr/bin/gost
 
   # 下载 systemd 启动服务文件
   wget -q --no-check-certificate "${gh_proxy_prefix}https://raw.githubusercontent.com/sky22333/shell/main/gost/gost.service"
-  chmod -R 777 gost.service
+  chmod -R 755 gost.service
   mv gost.service /usr/lib/systemd/system
 
   # 下载默认配置文件
   mkdir -p /etc/gost
   wget -q --no-check-certificate "${gh_proxy_prefix}https://raw.githubusercontent.com/sky22333/shell/main/gost/config.json"
   mv config.json /etc/gost
-  chmod -R 777 /etc/gost
+  chmod -R 755 /etc/gost
 
   # 启动服务
   systemctl enable gost && systemctl restart gost
@@ -463,7 +463,7 @@ function cert() {
     else
       apt-get install -y socat
     fi
-    read -p "请输入ZeroSSL的账户邮箱(至 zerossl.com 注册即可)：" zeromail
+    read -p "请随意输入一个邮箱用于申请证书：" zeromail
     read -p "请输入解析到本机的域名：" domain
     curl https://get.acme.sh | sh
     "$HOME"/.acme.sh/acme.sh --set-default-ca --server zerossl
@@ -483,7 +483,7 @@ function cert() {
         fi
         if "$HOME"/.acme.sh/acme.sh --installcert -d "${domain}" --fullchainpath $HOME/gost_cert/cert.pem --keypath $HOME/gost_cert/key.pem --ecc --force; then
           echo -e "SSL 证书配置成功，且会自动续签，证书及秘钥位于用户目录下的 ${Red_font_prefix}gost_cert${Font_color_suffix} 目录"
-          echo -e "证书目录名与证书文件名请勿更改; 删除 gost_cert 目录后用脚本重启,即自动启用gost内置证书"
+          echo -e "证书目录名与证书文件名请勿更改; 删除 gost_cert 目录后用脚本重启，会自动启用gost内置证书"
           echo -e "-----------------------------------"
         fi
       else
@@ -502,7 +502,7 @@ function cert() {
         fi
         if "$HOME"/.acme.sh/acme.sh --installcert -d "${domain}" --fullchainpath $HOME/gost_cert/cert.pem --keypath $HOME/gost_cert/key.pem --ecc --force; then
           echo -e "SSL 证书配置成功，且会自动续签，证书及秘钥位于用户目录下的 ${Red_font_prefix}gost_cert${Font_color_suffix} 目录"
-          echo -e "证书目录名与证书文件名请勿更改; 删除 gost_cert 目录后使用脚本重启, 即重新启用gost内置证书"
+          echo -e "证书目录名与证书文件名请勿更改; 删除 gost_cert 目录后使用脚本重启, 会重新启用gost内置证书"
           echo -e "-----------------------------------"
         fi
       else
@@ -518,7 +518,7 @@ function cert() {
     echo -e "-----------------------------------"
     echo -e "已在用户目录建立 ${Red_font_prefix}gost_cert${Font_color_suffix} 目录，请将证书文件 cert.pem 与秘钥文件 key.pem 上传到该目录"
     echo -e "证书与秘钥文件名必须与上述一致，目录名也请勿更改"
-    echo -e "上传成功后，用脚本重启gost会自动启用，无需再设置; 删除 gost_cert 目录后用脚本重启,即重新启用gost内置证书"
+    echo -e "上传成功后，用脚本重启gost会自动启用，无需再设置; 删除 gost_cert 目录后用脚本重启，会重新启用gost内置证书"
     echo -e "-----------------------------------"
   else
     echo "type error, please try again"
@@ -858,7 +858,7 @@ cron_restart() {
 echo && echo -e "                 gost 一键安装配置脚本" "
   -------------------------------------------------------------
   特性: (1)本脚本采用systemd及gost配置文件对gost进行管理
-        (2)机器重启后转发不失效
+        (2)机器重启后转发也不会失效
   功能: (1)tcp+udp不加密转发, (2)中转机加密转发, (3)落地机解密对接转发
 
  ${Green_font_prefix}1.${Font_color_suffix} 安装 gost
