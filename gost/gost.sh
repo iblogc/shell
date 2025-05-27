@@ -4,7 +4,7 @@
 Green_font_prefix="\033[32m" && Red_font_prefix="\033[31m" && Green_background_prefix="\033[42;37m" && Font_color_suffix="\033[0m"
 Info="${Green_font_prefix}[信息]${Font_color_suffix}"
 Error="${Red_font_prefix}[错误]${Font_color_suffix}"
-ct_new_ver="2.12.0" # 使用固定版本
+ct_new_ver="2.11.2" # 使用固定版本
 gost_conf_path="/etc/gost/config.json"
 raw_conf_path="/etc/gost/rawconf"
 
@@ -48,7 +48,7 @@ function check_root() {
   [[ $EUID != 0 ]] && echo -e "${Error} 当前非root用户，无法继续操作，请使用root权限运行此脚本。" && exit 1
 }
 function check_new_ver() {
-    ct_new_ver="2.12.0"
+    ct_new_ver="2.11.2"
     echo -e "${Info}当前下载 gost 版本为 ${ct_new_ver}"
 }
 function check_file() {
