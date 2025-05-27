@@ -3,7 +3,12 @@
 ```
 bash <(curl -sSL https://raw.githubusercontent.com/sky22333/shell/main/gost/gost.sh)
 ```
+---
 
+### 国内加速
+```
+bash <(curl -sSL https://gh-proxy.com/https://raw.githubusercontent.com/sky22333/shell/main/gost/gost.sh)
+```
 
 ---
 
