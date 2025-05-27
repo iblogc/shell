@@ -97,13 +97,13 @@ function Install_ct() {
   chmod -R 777 /usr/bin/gost
 
   # 下载 systemd 启动服务文件
-  wget -nv --no-check-certificate "${gh_proxy_prefix}https://raw.githubusercontent.com/sky22333/shell/main/gost/gost.service"
+  wget -q --no-check-certificate "${gh_proxy_prefix}https://raw.githubusercontent.com/sky22333/shell/main/gost/gost.service"
   chmod -R 777 gost.service
   mv gost.service /usr/lib/systemd/system
 
   # 下载默认配置文件
   mkdir -p /etc/gost
-  wget -nv --no-check-certificate "${gh_proxy_prefix}https://raw.githubusercontent.com/sky22333/shell/main/gost/config.json"
+  wget -q --no-check-certificate "${gh_proxy_prefix}https://raw.githubusercontent.com/sky22333/shell/main/gost/config.json"
   mv config.json /etc/gost
   chmod -R 777 /etc/gost
 
