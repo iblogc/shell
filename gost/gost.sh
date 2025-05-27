@@ -116,6 +116,8 @@ function Install_ct() {
   fi
 }
 function Uninstall_ct() {
+  systemctl stop gost.service 2>/dev/null
+  systemctl disable gost.service 2>/dev/null
   rm -rf /usr/bin/gost
   rm -rf /usr/lib/systemd/system/gost.service
   rm -rf /etc/gost
