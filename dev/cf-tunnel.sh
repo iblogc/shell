@@ -103,6 +103,8 @@ EOF
         sudo systemctl enable --now cloudflared-tunnel
     else
         echo -e "${YELLOW}更新服务配置中的穿透地址...${NC}"
+        # 清空日志，避免获取到旧的域名
+        sudo truncate -s 0 "$LOG_PATH" || sudo bash -c "> $LOG_PATH"
         sudo sed -i "s|ExecStart=.*|ExecStart=$(realpath $CLOUDFLARED_BIN) tunnel --url $LOCAL_ADDR|" "$SERVICE_PATH"
         sudo systemctl daemon-reload
         sudo systemctl restart cloudflared-tunnel
