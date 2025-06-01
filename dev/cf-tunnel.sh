@@ -101,7 +101,7 @@ StandardError=append:$LOG_PATH
 WantedBy=multi-user.target
 EOF
     else
-        echo -e "${YELLOW}更新服务中的穿透地址...${NC}"
+        echo -e "${YELLOW}获取公网访问域名...${NC}"
         sudo sed -i "s|ExecStart=.*|ExecStart=$(realpath $CLOUDFLARED_BIN) tunnel --url $LOCAL_ADDR|" "$SERVICE_PATH"
     fi
 
@@ -122,7 +122,7 @@ EOF
         sleep 1
     done
 
-    echo -e "${RED}超时未能获取临时域名，请稍后手动查看：$LOG_PATH${NC}"
+    echo -e "${RED}超时未能获取公网访问域名，请稍后手动查看：$LOG_PATH${NC}"
     exit 1
 
 else
