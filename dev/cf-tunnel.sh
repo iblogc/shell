@@ -24,7 +24,6 @@ else
         exit 1
     fi
     chmod +x "$CLOUDFLARED_BIN"
-    echo -e "${GREEN}下载完成并赋予执行权限${NC}"
 fi
 
 # 检查服务是否存在
