@@ -99,13 +99,14 @@ StandardError=append:$LOG_PATH
 [Install]
 WantedBy=multi-user.target
 EOF
+        sudo systemctl daemon-reload
+        sudo systemctl enable --now cloudflared-tunnel
     else
-        echo -e "${YELLOW}获取公网访问域名...${NC}"
+        echo -e "${YELLOW}更新服务配置中的穿透地址...${NC}"
         sudo sed -i "s|ExecStart=.*|ExecStart=$(realpath $CLOUDFLARED_BIN) tunnel --url $LOCAL_ADDR|" "$SERVICE_PATH"
+        sudo systemctl daemon-reload
+        sudo systemctl restart cloudflared-tunnel
     fi
-
-    sudo systemctl daemon-reload
-    sudo systemctl enable --now cloudflared-tunnel
 
     echo -e "${GREEN}服务已启动，日志保存在 $LOG_PATH${NC}"
     echo -e "${YELLOW}等待 cloudflared 输出访问域名...${NC}"
