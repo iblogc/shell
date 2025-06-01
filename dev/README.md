@@ -43,3 +43,8 @@ bash <(curl -sSL https://github.com/sky22333/shell/raw/main/dev/go.sh)
 ```
 bash <(curl -sSL https://github.com/sky22333/shell/raw/main/dev/bbr.sh)
 ```
+
+- 一键内网穿透(无需域名和服务器)：
+```
+bash <(curl -sSL https://github.com/sky22333/shell/raw/main/dev/cf-tunnel.sh)
+```
