@@ -16,7 +16,7 @@ LOG_PATH="/var/log/cloudflared.log"
 
 # 检查 cloudflared 是否已存在
 if [[ -f "$CLOUDFLARED_BIN" ]]; then
-    echo -e "${GREEN}已存在 cloudflared 二进制，跳过下载。${NC}"
+    echo -e "${GREEN}已存在文件，跳过下载。${NC}"
 else
     echo -e "${BLUE}正在下载 cloudflared...${NC}"
     if ! curl -L "$CLOUDFLARED_URL" -o "$CLOUDFLARED_BIN"; then
@@ -50,7 +50,7 @@ fi
 echo ""
 echo -e "${YELLOW}请选择运行模式：${NC}"
 echo "1) 临时运行（前台运行并显示临时访问域名）"
-echo "2) 后台运行（自动配置后台服务并显示临时访问域名）"
+echo "2) 后台运行（自动配置后台服务并显示访问域名）"
 read -p "请输入 1 或 2: " MODE
 
 # 输入内网地址
@@ -102,8 +102,7 @@ EOF
         sudo systemctl daemon-reload
         sudo systemctl enable --now cloudflared-tunnel
     else
-        echo -e "${YELLOW}更新服务配置中的穿透地址...${NC}"
-        # 清空日志，避免获取到旧的域名
+        echo -e "${YELLOW}更新systemd服务配置中的穿透地址...${NC}"
         sudo truncate -s 0 "$LOG_PATH" || sudo bash -c "> $LOG_PATH"
         sudo sed -i "s|ExecStart=.*|ExecStart=$(realpath $CLOUDFLARED_BIN) tunnel --url $LOCAL_ADDR|" "$SERVICE_PATH"
         sudo systemctl daemon-reload
