@@ -19,6 +19,7 @@ $installDir = "$env:ProgramData\cloudflared"
 $cloudflaredBin = Join-Path $installDir "cloudflared.exe"
 $logPath = Join-Path $installDir "cloudflared.log"
 $serviceName = "CloudflaredTunnel"
+$scPath = Join-Path $env:SystemRoot "System32\sc.exe"
 
 # Create installation directory
 if (-not (Test-Path $installDir)) {
@@ -49,7 +50,7 @@ if ($serviceExists) {
     if ($uninstall -eq "y" -or $uninstall -eq "Y") {
         Write-Color "Uninstalling old service..." Cyan
         Stop-Service -Name $serviceName -ErrorAction SilentlyContinue
-        sc.exe delete $serviceName | Out-Null
+        & $scPath delete $serviceName | Out-Null
         Remove-Item -Force $logPath -ErrorAction SilentlyContinue
         Write-Color "Service uninstalled." Green
     } else {
@@ -173,28 +174,33 @@ if ($mode -eq "1") {
     Write-Color "Registering as system service and running in background..." Cyan
     # Fixed: Use proper PowerShell string escaping
     $svcCmd = """$cloudflaredBin"" tunnel --url $localAddr --logfile ""$logPath"""
-    sc.exe create $serviceName binPath= $svcCmd start= auto | Out-Null
+    & $scPath create $serviceName binPath= $svcCmd start= auto | Out-Null
     Start-Sleep -Seconds 2
-    Start-Service -Name $serviceName
+    
+    try {
+        Start-Service -Name $serviceName -ErrorAction Stop
+        Write-Color "Service started, waiting for log output..." Green
 
-    Write-Color "Service started, waiting for log output..." Green
-
-    $domain = $null
-    for ($i = 0; $i -lt 30; $i++) {
-        Start-Sleep -Seconds 1
-        if (Test-Path $logPath) {
-            $content = Get-Content $logPath -Raw
-            if ($content -match 'https://[a-zA-Z0-9-]+\.trycloudflare\.com') {
-                $domain = $matches[0]
-                Write-Color "`nPublic access address:" Green
-                Write-Color "$domain" Green
-                break
+        $domain = $null
+        for ($i = 0; $i -lt 30; $i++) {
+            Start-Sleep -Seconds 1
+            if (Test-Path $logPath) {
+                $content = Get-Content $logPath -Raw
+                if ($content -match 'https://[a-zA-Z0-9-]+\.trycloudflare\.com') {
+                    $domain = $matches[0]
+                    Write-Color "`nPublic access address:" Green
+                    Write-Color "$domain" Green
+                    break
+                }
             }
         }
-    }
 
-    if (-not $domain) {
-        Write-Color "No access domain detected, please check log manually: $logPath" Red
+        if (-not $domain) {
+            Write-Color "No access domain detected, please check log manually: $logPath" Red
+        }
+    } catch {
+        Write-Color "Failed to start service. Error: $($_.Exception.Message)" Red
+        Write-Color "Please check if you have administrator privileges." Yellow
     }
 
 } else {
