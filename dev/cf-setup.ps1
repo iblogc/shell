@@ -166,7 +166,7 @@ Write-Host "1) Temporary run (foreground with trycloudflare domain display)"
 Write-Host "2) Background run (register as system service)"
 
 do {
-    $mode = Read-Host "Please enter 1 or 2"
+    $mode = Read-Host "Please enter 1 or 2 ?"
 } while ($mode -notin @('1','2'))
 
 do {
@@ -179,112 +179,13 @@ if ($mode -eq "1") {
     Write-ColorMessage "Local service address: $localAddr" Green
     
     try {
-
-        $arguments = @("tunnel", "--url", $localAddr)
+        Write-ColorMessage "Running cloudflared directly with output to console..." Yellow
+        Write-ColorMessage "Press Ctrl+C to stop the tunnel" Yellow
         
-        $processStartInfo = New-Object System.Diagnostics.ProcessStartInfo
-        $processStartInfo.FileName = $cloudflaredBin
-        $processStartInfo.Arguments = $arguments -join " "
-        $processStartInfo.UseShellExecute = $false
-        $processStartInfo.RedirectStandardOutput = $true
-        $processStartInfo.RedirectStandardError = $true
-        $processStartInfo.CreateNoWindow = $false
-        $processStartInfo.WorkingDirectory = $installDir
-        
-        $process = New-Object System.Diagnostics.Process
-        $process.StartInfo = $processStartInfo
-        
-        $process.Start() | Out-Null
-        
-        Write-ColorMessage "Waiting for tunnel URL (monitoring output)..." Yellow
-        Write-ColorMessage "If there's no output for a long time, check if local service is running at $localAddr" Cyan
-        
-        $domain = $null
-        $timeout = 60
-        $outputLines = @()
-        
-        for ($i = 0; $i -lt $timeout; $i++) {
-            Start-Sleep -Seconds 1
-            
-            try {
-                if (-not $process.StandardOutput.EndOfStream) {
-                    $line = $process.StandardOutput.ReadLine()
-                    if ($line) {
-                        $outputLines += $line
-                        Write-Host $line -ForegroundColor Gray
-                        
-                        if ($line -match 'https://[a-zA-Z0-9-]+\.trycloudflare\.com') {
-                            $domain = $matches[0]
-                            break
-                        }
-                    }
-                }
-                
-                if (-not $process.StandardError.EndOfStream) {
-                    $errorLine = $process.StandardError.ReadLine()
-                    if ($errorLine) {
-                        $outputLines += $errorLine
-                        Write-Host $errorLine -ForegroundColor Gray
-                        
-                        if ($errorLine -match 'https://[a-zA-Z0-9-]+\.trycloudflare\.com') {
-                            $domain = $matches[0]
-                            break
-                        }
-                    }
-                }
-            } catch {
-            }
-            
-            if ($process.HasExited) {
-                Write-ColorMessage "Process unexpectedly exited, exit code: $($process.ExitCode)" Red
-                break
-            }
-            
-            if ($i % 5 -eq 0 -and $i -gt 0) {
-                Write-Host "." -NoNewline
-            }
-        }
-        
-        Write-Host ""
-        
-        if ($domain) {
-            Write-ColorMessage "`n=== Tunnel Created Successfully ===" Green
-            Write-ColorMessage "Public access URL: $domain" Green
-            Write-ColorMessage "Local service address: $localAddr" Cyan
-            Write-ColorMessage "`nPress Ctrl+C to stop the tunnel" Yellow
-            
-            try {
-                $process.WaitForExit()
-            } catch [System.Threading.ThreadInterruptedException] {
-                Write-ColorMessage "`nProcess interrupted" Yellow
-            }
-        } else {
-            Write-ColorMessage "Could not automatically extract tunnel URL" Red
-            Write-ColorMessage "But the tunnel may still be running, please check the output above" Yellow
-            
-            if ($outputLines.Count -gt 0) {
-                Write-ColorMessage "`nRecent output:" Cyan
-                $outputLines | Select-Object -Last 10 | ForEach-Object {
-                    if (![string]::IsNullOrWhiteSpace($_)) {
-                        Write-Host $_
-                    }
-                }
-            }
-        }
+        & $cloudflaredBin tunnel --url $localAddr
         
     } catch {
         Write-ColorMessage "Error starting process: $($_.Exception.Message)" Red
-    } finally {
-        try {
-            if ($process -and -not $process.HasExited) {
-                $process.Kill()
-                $process.WaitForExit(5000)
-            }
-            if ($process) {
-                $process.Dispose()
-            }
-        } catch {
-        }
     }
     
 } elseif ($mode -eq "2") {
