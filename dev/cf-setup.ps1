@@ -2,41 +2,11 @@
 # 远程执行: "iwr -useb https://gh-proxy.com/https://raw.githubusercontent.com/sky22333/shell/main/dev/cf-setup.ps1 | iex"
 # 安装路径: "C:\ProgramData\cloudflared\"
 
-# 设置控制台编码以支持中文字符
-try {
-    # 设置控制台代码页为UTF-8 (65001)
-    $null = cmd /c "chcp 65001 >nul 2>&1"
-    
-    # 设置PowerShell输出编码
-    if ($PSVersionTable.PSVersion.Major -ge 5) {
-        [Console]::OutputEncoding = [System.Text.Encoding]::GetEncoding("GB2312")
-        [Console]::InputEncoding = [System.Text.Encoding]::GetEncoding("GB2312")
-        $OutputEncoding = [System.Text.Encoding]::GetEncoding("GB2312")
-    } else {
-        # PowerShell 2.x/3.x 兼容性
-        $OutputEncoding = [System.Text.Encoding]::GetEncoding("GB2312")
-    }
-    
-    # 尝试设置控制台字体（如果可能）
-    if ([Environment]::OSVersion.Version.Major -ge 10) {
-        # Windows 10+ 支持UTF-8
-        try {
-            [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
-            $OutputEncoding = [System.Text.Encoding]::UTF8
-        } catch {
-            # 回退到GB2312
-        }
-    }
-} catch {
-    # 如果所有编码设置都失败，使用默认编码
-    Write-Warning "Encoding settings may be incomplete, Chinese characters display might have issues"
-}
-
 # 兼容性检查和设置
 $ProgressPreference = 'SilentlyContinue'  # 禁用进度条避免远程执行问题
 $ErrorActionPreference = 'Stop'
 
-# 彩色输出函数 - 兼容所有PowerShell版本并支持中文
+# 彩色输出函数 - 兼容所有PowerShell版本
 function Write-ColorMessage {
     param (
         [Parameter(Mandatory=$true)]
@@ -46,18 +16,14 @@ function Write-ColorMessage {
     )
     
     try {
-        # 确保消息以正确编码输出
-        $bytes = [System.Text.Encoding]::GetEncoding("GB2312").GetBytes($Message)
-        $decodedMessage = [System.Text.Encoding]::GetEncoding("GB2312").GetString($bytes)
-        
         $originalColor = $null
         if ($Host.UI -and $Host.UI.RawUI -and $Host.UI.RawUI.ForegroundColor) {
             $originalColor = $Host.UI.RawUI.ForegroundColor
             $Host.UI.RawUI.ForegroundColor = $Color
         }
         
-        # 使用Write-Host确保正确显示中文
-        Write-Host $decodedMessage
+        # 使用Write-Host确保正确显示
+        Write-Host $Message
         
         if ($originalColor -ne $null) {
             $Host.UI.RawUI.ForegroundColor = $originalColor
