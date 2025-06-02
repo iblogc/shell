@@ -102,6 +102,7 @@ if ($mode -eq "1") {
 
 } elseif ($mode -eq "2") {
     Write-Color "注册为系统服务并后台运行..." Cyan
+    # 修复：使用正确的PowerShell字符串转义语法
     $svcCmd = "`"$cloudflaredBin`" tunnel --url $localAddr --logfile `"$logPath`""
     sc.exe create $serviceName binPath= $svcCmd start= auto | Out-Null
     Start-Sleep -Seconds 2
