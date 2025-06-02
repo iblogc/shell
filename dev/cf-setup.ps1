@@ -1,4 +1,4 @@
-# PowerShell: "iwr -useb https://gh-proxy.com/https://raw.githubusercontent.com/sky22333/shell/main/dev/cf-setup.ps1 | iex"
+# PowerShell: "iwr -useb https://raw.githubusercontent.com/sky22333/shell/main/dev/cf-setup.ps1 | iex"
 # Path: "C:\ProgramData\cloudflared\"
 
 $ProgressPreference = 'SilentlyContinue'
