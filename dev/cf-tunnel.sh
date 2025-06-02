@@ -11,7 +11,7 @@ BLUE='\033[1;34m'
 NC='\033[0m' # 清除颜色
 
 CLOUDFLARED_URL="https://github.com/cloudflare/cloudflared/releases/download/2025.5.0/cloudflared-linux-amd64"
-CLOUDFLARED_BIN="./cloudflared"
+CLOUDFLARED_BIN="/usr/local/bin/cloudflared"
 SERVICE_PATH="/etc/systemd/system/cloudflared-tunnel.service"
 LOG_PATH="/var/log/cloudflared.log"
 
@@ -92,7 +92,7 @@ Description=Cloudflared Tunnel Service
 After=network.target
 
 [Service]
-ExecStart=$(realpath $CLOUDFLARED_BIN) tunnel --url $LOCAL_ADDR
+ExecStart=$CLOUDFLARED_BIN tunnel --url $LOCAL_ADDR
 Restart=always
 StandardOutput=append:$LOG_PATH
 StandardError=append:$LOG_PATH
@@ -103,9 +103,9 @@ EOF
         sudo systemctl daemon-reload
         sudo systemctl enable --now cloudflared-tunnel
     else
-        echo -e "${YELLOW}更新systemd服务配置中的穿透地址...${NC}"
+        echo -e "${YELLOW}更新 systemd 服务配置中的穿透地址...${NC}"
         sudo truncate -s 0 "$LOG_PATH" || sudo bash -c "> $LOG_PATH"
-        sudo sed -i "s|ExecStart=.*|ExecStart=$(realpath $CLOUDFLARED_BIN) tunnel --url $LOCAL_ADDR|" "$SERVICE_PATH"
+        sudo sed -i "s|ExecStart=.*|ExecStart=$CLOUDFLARED_BIN tunnel --url $LOCAL_ADDR|" "$SERVICE_PATH"
         sudo systemctl daemon-reload
         sudo systemctl restart cloudflared-tunnel
     fi
