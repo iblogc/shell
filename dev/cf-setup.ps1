@@ -1,4 +1,4 @@
-﻿# PowerShell 脚本用于 Windows: 设置和运行 cloudflared 隧道
+# PowerShell 脚本用于 Windows: 设置和运行 cloudflared 隧道
 # 远程执行: "iwr -useb https://gh-proxy.com/https://raw.githubusercontent.com/sky22333/shell/main/dev/cf-setup.ps1 | iex"
 # 安装路径: "C:\ProgramData\cloudflared\"
 
