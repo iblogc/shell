@@ -29,7 +29,7 @@ try {
     }
 } catch {
     # 如果所有编码设置都失败，使用默认编码
-    Write-Warning "编码设置可能不完整，中文显示可能有问题"
+    Write-Warning "Encoding settings may be incomplete, Chinese characters display might have issues"
 }
 
 # 兼容性检查和设置
@@ -95,7 +95,7 @@ function Download-File {
         }
         return $true
     } catch {
-        Write-ColorMessage "下载失败: $($_.Exception.Message)" Red
+        Write-ColorMessage "Download failed: $($_.Exception.Message)" Red
         return $false
     }
 }
@@ -112,8 +112,8 @@ function Test-AdminRights {
 }
 
 # 主脚本开始
-Write-Host "====== CloudFlared 隧道设置工具 ======" -ForegroundColor Cyan
-Write-Host "正在初始化..." -ForegroundColor Yellow
+Write-Host "====== CloudFlared Tunnel Setup Tool ======" -ForegroundColor Cyan
+Write-Host "Initializing..." -ForegroundColor Yellow
 
 # 变量定义
 $cloudflaredUrl = "https://github.com/cloudflare/cloudflared/releases/download/2024.12.2/cloudflared-windows-amd64.exe"
@@ -124,70 +124,70 @@ $serviceName = "CloudflaredTunnel"
 
 # 检查PowerShell版本
 $psVersion = $PSVersionTable.PSVersion.Major
-Write-Host "检测到 PowerShell 版本: $psVersion" -ForegroundColor Green
+Write-Host "Detected PowerShell version: $psVersion" -ForegroundColor Green
 
 # 创建安装目录
 try {
     if (-not (Test-Path $installDir)) {
         New-Item -ItemType Directory -Path $installDir -Force | Out-Null
-        Write-ColorMessage "创建安装目录: $installDir" Green
+        Write-ColorMessage "Created installation directory: $installDir" Green
     }
 } catch {
-    Write-ColorMessage "无法创建安装目录，可能需要管理员权限" Red
-    Write-ColorMessage "错误: $($_.Exception.Message)" Red
+    Write-ColorMessage "Cannot create installation directory, may need administrator privileges" Red
+    Write-ColorMessage "Error: $($_.Exception.Message)" Red
     exit 1
 }
 
 # 下载 cloudflared
-Write-ColorMessage "`n正在检查 cloudflared..." Yellow
+Write-ColorMessage "`nChecking cloudflared..." Yellow
 if (Test-Path $cloudflaredBin) {
-    Write-ColorMessage "cloudflared.exe 已存在: $cloudflaredBin" Green
+    Write-ColorMessage "cloudflared.exe already exists: $cloudflaredBin" Green
     
     # 获取文件版本信息
     try {
         $fileInfo = Get-Item $cloudflaredBin
         $fileSize = [math]::Round($fileInfo.Length / 1MB, 2)
-        Write-ColorMessage "文件大小: ${fileSize} MB" Cyan
+        Write-ColorMessage "File size: ${fileSize} MB" Cyan
     } catch {
         # 忽略版本信息获取错误
     }
 } else {
-    Write-ColorMessage "开始下载 cloudflared..." Cyan
-    Write-ColorMessage "下载地址: $cloudflaredUrl" Gray
-    Write-ColorMessage "保存位置: $cloudflaredBin" Gray
+    Write-ColorMessage "Starting download of cloudflared..." Cyan
+    Write-ColorMessage "Download URL: $cloudflaredUrl" Gray
+    Write-ColorMessage "Save location: $cloudflaredBin" Gray
     
     $downloadSuccess = Download-File -Url $cloudflaredUrl -OutputPath $cloudflaredBin
     
     if ($downloadSuccess) {
-        Write-ColorMessage "下载完成!" Green
+        Write-ColorMessage "Download complete!" Green
         try {
             $fileInfo = Get-Item $cloudflaredBin
             $fileSize = [math]::Round($fileInfo.Length / 1MB, 2)
-            Write-ColorMessage "文件大小: ${fileSize} MB" Cyan
+            Write-ColorMessage "File size: ${fileSize} MB" Cyan
         } catch {
             # 忽略文件信息获取错误
         }
     } else {
-        Write-ColorMessage "下载失败，请检查网络连接或手动下载" Red
-        Write-ColorMessage "手动下载地址: $cloudflaredUrl" Yellow
+        Write-ColorMessage "Download failed, please check your network connection or download manually" Red
+        Write-ColorMessage "Manual download URL: $cloudflaredUrl" Yellow
         exit 1
     }
 }
 
 # 检查现有服务
-Write-ColorMessage "`n正在检查现有服务..." Yellow
+Write-ColorMessage "`nChecking existing services..." Yellow
 try {
     $serviceExists = Get-Service -Name $serviceName -ErrorAction SilentlyContinue
     if ($serviceExists) {
-        Write-ColorMessage "检测到现有的 cloudflared 服务: $serviceName" Yellow
-        Write-ColorMessage "服务状态: $($serviceExists.Status)" Cyan
+        Write-ColorMessage "Detected existing cloudflared service: $serviceName" Yellow
+        Write-ColorMessage "Service status: $($serviceExists.Status)" Cyan
         
         do {
-            $uninstall = Read-Host "是否要卸载旧服务? (y/n)"
+            $uninstall = Read-Host "Do you want to uninstall the old service? (y/n)"
         } while ($uninstall -notin @('y','Y','n','N','yes','no'))
         
         if ($uninstall -in @('y','Y','yes')) {
-            Write-ColorMessage "正在卸载旧服务..." Cyan
+            Write-ColorMessage "Uninstalling old service..." Cyan
             try {
                 Stop-Service -Name $serviceName -Force -ErrorAction SilentlyContinue
                 Start-Sleep -Seconds 2
@@ -200,37 +200,37 @@ try {
                     Remove-Item -Path $logPath -Force -ErrorAction SilentlyContinue
                 }
                 
-                Write-ColorMessage "服务卸载完成" Green
+                Write-ColorMessage "Service uninstallation complete" Green
             } catch {
-                Write-ColorMessage "卸载服务时出错: $($_.Exception.Message)" Red
+                Write-ColorMessage "Error uninstalling service: $($_.Exception.Message)" Red
             }
         } else {
-            Write-ColorMessage "保留现有服务，仅更新运行地址" Yellow
+            Write-ColorMessage "Keeping existing service, only updating run address" Yellow
         }
     }
 } catch {
-    Write-ColorMessage "检查服务时出错: $($_.Exception.Message)" Red
+    Write-ColorMessage "Error checking service: $($_.Exception.Message)" Red
 }
 
 # 模式选择
-Write-ColorMessage "`n请选择运行模式:" Yellow
-Write-Host "1) 临时运行 (前台运行并显示 trycloudflare 域名)"
-Write-Host "2) 后台运行 (注册为系统服务)"
+Write-ColorMessage "`nPlease select run mode:" Yellow
+Write-Host "1) Temporary run (foreground with trycloudflare domain display)"
+Write-Host "2) Background run (register as system service)"
 
 do {
-    $mode = Read-Host "请输入 1 或 2"
+    $mode = Read-Host "Please enter 1 or 2"
 } while ($mode -notin @('1','2'))
 
 # 获取本地地址
 do {
-    $localAddr = Read-Host "请输入本地服务地址 (例如: 127.0.0.1:8080)"
+    $localAddr = Read-Host "Please enter local service address (e.g.: 127.0.0.1:8080)"
 } while ([string]::IsNullOrWhiteSpace($localAddr))
 
 if ($mode -eq "1") {
     # 临时运行模式
-    Write-ColorMessage "`n正在以临时模式运行 cloudflared..." Cyan
-    Write-ColorMessage "启动 cloudflared 进程..." Yellow
-    Write-ColorMessage "本地服务地址: $localAddr" Green
+    Write-ColorMessage "`nRunning cloudflared in temporary mode..." Cyan
+    Write-ColorMessage "Starting cloudflared process..." Yellow
+    Write-ColorMessage "Local service address: $localAddr" Green
     
     try {
         # 构建命令参数
@@ -252,8 +252,8 @@ if ($mode -eq "1") {
         # 启动进程
         $process.Start() | Out-Null
         
-        Write-ColorMessage "正在等待隧道URL (监控输出中)..." Yellow
-        Write-ColorMessage "如果长时间没有输出，请检查本地服务是否运行在 $localAddr" Cyan
+        Write-ColorMessage "Waiting for tunnel URL (monitoring output)..." Yellow
+        Write-ColorMessage "If there's no output for a long time, check if local service is running at $localAddr" Cyan
         
         # 读取输出并查找域名
         $domain = $null
@@ -296,7 +296,7 @@ if ($mode -eq "1") {
             
             # 检查进程是否还在运行
             if ($process.HasExited) {
-                Write-ColorMessage "进程意外退出，退出代码: $($process.ExitCode)" Red
+                Write-ColorMessage "Process unexpectedly exited, exit code: $($process.ExitCode)" Red
                 break
             }
             
@@ -309,24 +309,24 @@ if ($mode -eq "1") {
         Write-Host ""
         
         if ($domain) {
-            Write-ColorMessage "`n=== 隧道创建成功 ===" Green
-            Write-ColorMessage "公网访问地址: $domain" Green
-            Write-ColorMessage "本地服务地址: $localAddr" Cyan
-            Write-ColorMessage "`n按 Ctrl+C 停止隧道" Yellow
+            Write-ColorMessage "`n=== Tunnel Created Successfully ===" Green
+            Write-ColorMessage "Public access URL: $domain" Green
+            Write-ColorMessage "Local service address: $localAddr" Cyan
+            Write-ColorMessage "`nPress Ctrl+C to stop the tunnel" Yellow
             
             # 保持进程运行
             try {
                 $process.WaitForExit()
             } catch [System.Threading.ThreadInterruptedException] {
-                Write-ColorMessage "`n进程被中断" Yellow
+                Write-ColorMessage "`nProcess interrupted" Yellow
             }
         } else {
-            Write-ColorMessage "无法自动提取隧道URL" Red
-            Write-ColorMessage "但隧道可能仍在运行，请检查上方输出" Yellow
+            Write-ColorMessage "Could not automatically extract tunnel URL" Red
+            Write-ColorMessage "But the tunnel may still be running, please check the output above" Yellow
             
             # 显示最近的输出
             if ($outputLines.Count -gt 0) {
-                Write-ColorMessage "`n最近的输出:" Cyan
+                Write-ColorMessage "`nRecent output:" Cyan
                 $outputLines | Select-Object -Last 10 | ForEach-Object {
                     if (![string]::IsNullOrWhiteSpace($_)) {
                         Write-Host $_
@@ -336,7 +336,7 @@ if ($mode -eq "1") {
         }
         
     } catch {
-        Write-ColorMessage "启动进程时出错: $($_.Exception.Message)" Red
+        Write-ColorMessage "Error starting process: $($_.Exception.Message)" Red
     } finally {
         # 清理进程
         try {
@@ -354,12 +354,12 @@ if ($mode -eq "1") {
     
 } elseif ($mode -eq "2") {
     # 服务运行模式
-    Write-ColorMessage "`n正在注册为系统服务并后台运行..." Cyan
+    Write-ColorMessage "`nRegistering as system service and running in background..." Cyan
     
     # 检查管理员权限
     if (-not (Test-AdminRights)) {
-        Write-ColorMessage "警告: 可能需要管理员权限来创建系统服务" Yellow
-        Write-ColorMessage "如果失败，请以管理员身份重新运行此脚本" Yellow
+        Write-ColorMessage "Warning: Administrator privileges may be required to create system services" Yellow
+        Write-ColorMessage "If this fails, please run this script as administrator" Yellow
     }
     
     try {
@@ -370,17 +370,17 @@ if ($mode -eq "1") {
         $scResult = & "$env:SystemRoot\System32\sc.exe" create $serviceName binPath= $serviceCommand start= auto
         
         if ($LASTEXITCODE -eq 0) {
-            Write-ColorMessage "服务创建成功" Green
+            Write-ColorMessage "Service created successfully" Green
         } else {
-            Write-ColorMessage "服务创建可能失败，退出代码: $LASTEXITCODE" Yellow
+            Write-ColorMessage "Service creation may have failed, exit code: $LASTEXITCODE" Yellow
         }
         
         Start-Sleep -Seconds 2
         
         # 启动服务
-        Write-ColorMessage "正在启动服务..." Yellow
+        Write-ColorMessage "Starting service..." Yellow
         Start-Service -Name $serviceName -ErrorAction Stop
-        Write-ColorMessage "服务启动成功，正在等待日志输出..." Green
+        Write-ColorMessage "Service started successfully, waiting for log output..." Green
         
         # 等待并读取日志
         $domain = $null
@@ -392,10 +392,10 @@ if ($mode -eq "1") {
                     $logContent = Get-Content $logPath -Raw -ErrorAction SilentlyContinue
                     if ($logContent -and $logContent -match 'https://[a-zA-Z0-9-]+\.trycloudflare\.com') {
                         $domain = $matches[0]
-                        Write-ColorMessage "`n=== 服务运行成功 ===" Green
-                        Write-ColorMessage "公网访问地址: $domain" Green
-                        Write-ColorMessage "本地服务地址: $localAddr" Cyan
-                        Write-ColorMessage "日志文件位置: $logPath" Gray
+                        Write-ColorMessage "`n=== Service Running Successfully ===" Green
+                        Write-ColorMessage "Public access URL: $domain" Green
+                        Write-ColorMessage "Local service address: $localAddr" Cyan
+                        Write-ColorMessage "Log file location: $logPath" Gray
                         break
                     }
                 } catch {
@@ -412,27 +412,27 @@ if ($mode -eq "1") {
         Write-Host ""
         
         if (-not $domain) {
-            Write-ColorMessage "未检测到访问域名，请手动检查日志: $logPath" Yellow
-            Write-ColorMessage "服务可能需要更多时间来建立连接" Cyan
+            Write-ColorMessage "No access domain detected, please check the log manually: $logPath" Yellow
+            Write-ColorMessage "The service may need more time to establish connection" Cyan
             
             # 显示服务状态
             try {
                 $serviceStatus = Get-Service -Name $serviceName
-                Write-ColorMessage "服务状态: $($serviceStatus.Status)" Cyan
+                Write-ColorMessage "Service status: $($serviceStatus.Status)" Cyan
             } catch {
-                Write-ColorMessage "无法获取服务状态" Red
+                Write-ColorMessage "Unable to get service status" Red
             }
         }
         
-        Write-ColorMessage "`n服务管理命令:" Yellow
-        Write-ColorMessage "停止服务: Stop-Service -Name $serviceName" Gray
-        Write-ColorMessage "启动服务: Start-Service -Name $serviceName" Gray
-        Write-ColorMessage "删除服务: sc.exe delete $serviceName" Gray
+        Write-ColorMessage "`nService management commands:" Yellow
+        Write-ColorMessage "Stop service: Stop-Service -Name $serviceName" Gray
+        Write-ColorMessage "Start service: Start-Service -Name $serviceName" Gray
+        Write-ColorMessage "Delete service: sc.exe delete $serviceName" Gray
         
     } catch {
-        Write-ColorMessage "创建或启动服务失败" Red
-        Write-ColorMessage "错误: $($_.Exception.Message)" Red
-        Write-ColorMessage "请确认您有管理员权限" Yellow
+        Write-ColorMessage "Failed to create or start service" Red
+        Write-ColorMessage "Error: $($_.Exception.Message)" Red
+        Write-ColorMessage "Please make sure you have administrator privileges" Yellow
         
         # 尝试清理失败的服务
         try {
@@ -443,8 +443,8 @@ if ($mode -eq "1") {
     }
     
 } else {
-    Write-ColorMessage "无效选项，请输入 1 或 2" Red
+    Write-ColorMessage "Invalid option, please enter 1 or 2" Red
     exit 1
 }
 
-Write-ColorMessage "`n脚本执行完成" Green
+Write-ColorMessage "`nScript execution complete" Green
