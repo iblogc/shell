@@ -1,6 +1,6 @@
 # cloudflared-setup.ps1
 # PowerShell script for Windows: Setup and run cloudflared tunnel
-# powershell -ExecutionPolicy Bypass -Command "iwr -useb https://gh-proxy.com/https://raw.githubusercontent.com/sky22333/shell/main/dev/cf-setup.ps1 | iex"
+# powershell："iwr -useb https://gh-proxy.com/https://raw.githubusercontent.com/sky22333/shell/main/dev/cf-setup.ps1 | iex"
 
 # === 颜色函数 ===
 function Write-Color {
@@ -16,9 +16,14 @@ function Write-Color {
 
 # === 变量定义 ===
 $cloudflaredUrl = "https://gh-proxy.com/https://github.com/cloudflare/cloudflared/releases/download/2025.5.0/cloudflared-windows-amd64.exe"
-$cloudflaredBin = ".\cloudflared.exe"
-$logPath = "$PSScriptRoot\cloudflared.log"
+$cloudflaredBin = "$env:ProgramData\cloudflared\cloudflared.exe"
+$logPath = "$env:ProgramData\cloudflared\cloudflared.log"
 $serviceName = "CloudflaredTunnel"
+
+# 创建目标目录
+if (-not (Test-Path (Split-Path $cloudflaredBin))) {
+    New-Item -ItemType Directory -Path (Split-Path $cloudflaredBin) -Force | Out-Null
+}
 
 # 下载 cloudflared
 if (Test-Path $cloudflaredBin) {
@@ -96,16 +101,13 @@ if ($mode -eq "1") {
     $process.WaitForExit()
 } elseif ($mode -eq "2") {
     Write-Color "正在注册 cloudflared 为系统服务..." Cyan
-    $fullPath = Resolve-Path $cloudflaredBin
-
-    $svcCmd = "`"$fullPath`" tunnel --url $localAddr"
+    $svcCmd = "\"$cloudflaredBin\" tunnel --url $localAddr"
     sc.exe create $serviceName binPath= $svcCmd start= auto | Out-Null
     Start-Sleep -Seconds 2
     Start-Service -Name $serviceName
 
     Write-Color "服务已启动，等待 cloudflared 输出访问域名..." Green
 
-    # 日志检测：cloudflared 默认输出路径可配置（需 cloudflared 本身支持 Windows 日志）
     Start-Sleep -Seconds 3
     for ($i = 0; $i -lt 30; $i++) {
         Start-Sleep -Seconds 1
