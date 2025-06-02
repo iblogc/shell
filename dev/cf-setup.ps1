@@ -3,21 +3,40 @@
 # 安装路径: "C:\ProgramData\cloudflared\"
 
 # 设置控制台编码以支持中文字符
-if ($PSVersionTable.PSVersion.Major -ge 5) {
-    try {
-        [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
-        [Console]::InputEncoding = [System.Text.Encoding]::UTF8
-        $OutputEncoding = [System.Text.Encoding]::UTF8
-    } catch {
-        # 忽略编码设置错误，继续执行
+try {
+    # 设置控制台代码页为UTF-8 (65001)
+    $null = cmd /c "chcp 65001 >nul 2>&1"
+    
+    # 设置PowerShell输出编码
+    if ($PSVersionTable.PSVersion.Major -ge 5) {
+        [Console]::OutputEncoding = [System.Text.Encoding]::GetEncoding("GB2312")
+        [Console]::InputEncoding = [System.Text.Encoding]::GetEncoding("GB2312")
+        $OutputEncoding = [System.Text.Encoding]::GetEncoding("GB2312")
+    } else {
+        # PowerShell 2.x/3.x 兼容性
+        $OutputEncoding = [System.Text.Encoding]::GetEncoding("GB2312")
     }
+    
+    # 尝试设置控制台字体（如果可能）
+    if ([Environment]::OSVersion.Version.Major -ge 10) {
+        # Windows 10+ 支持UTF-8
+        try {
+            [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+            $OutputEncoding = [System.Text.Encoding]::UTF8
+        } catch {
+            # 回退到GB2312
+        }
+    }
+} catch {
+    # 如果所有编码设置都失败，使用默认编码
+    Write-Warning "编码设置可能不完整，中文显示可能有问题"
 }
 
 # 兼容性检查和设置
 $ProgressPreference = 'SilentlyContinue'  # 禁用进度条避免远程执行问题
 $ErrorActionPreference = 'Stop'
 
-# 彩色输出函数 - 兼容所有PowerShell版本
+# 彩色输出函数 - 兼容所有PowerShell版本并支持中文
 function Write-ColorMessage {
     param (
         [Parameter(Mandatory=$true)]
@@ -26,22 +45,30 @@ function Write-ColorMessage {
         [string]$Color = 'White'
     )
     
-    # 确保在所有环境中都能正常工作
     try {
+        # 确保消息以正确编码输出
+        $bytes = [System.Text.Encoding]::GetEncoding("GB2312").GetBytes($Message)
+        $decodedMessage = [System.Text.Encoding]::GetEncoding("GB2312").GetString($bytes)
+        
         $originalColor = $null
-        if ($Host.UI -and $Host.UI.RawUI) {
+        if ($Host.UI -and $Host.UI.RawUI -and $Host.UI.RawUI.ForegroundColor) {
             $originalColor = $Host.UI.RawUI.ForegroundColor
             $Host.UI.RawUI.ForegroundColor = $Color
         }
         
-        Write-Host $Message
+        # 使用Write-Host确保正确显示中文
+        Write-Host $decodedMessage
         
         if ($originalColor -ne $null) {
             $Host.UI.RawUI.ForegroundColor = $originalColor
         }
     } catch {
-        # 回退到基本输出
-        Write-Host $Message
+        # 回退方法：直接输出不进行编码转换
+        try {
+            Write-Host $Message -ForegroundColor $Color
+        } catch {
+            Write-Host $Message
+        }
     }
 }
 
@@ -85,8 +112,8 @@ function Test-AdminRights {
 }
 
 # 主脚本开始
-Write-ColorMessage "====== CloudFlared 隧道设置工具 ======" Cyan
-Write-ColorMessage "正在初始化..." Yellow
+Write-Host "====== CloudFlared 隧道设置工具 ======" -ForegroundColor Cyan
+Write-Host "正在初始化..." -ForegroundColor Yellow
 
 # 变量定义
 $cloudflaredUrl = "https://github.com/cloudflare/cloudflared/releases/download/2024.12.2/cloudflared-windows-amd64.exe"
@@ -97,7 +124,7 @@ $serviceName = "CloudflaredTunnel"
 
 # 检查PowerShell版本
 $psVersion = $PSVersionTable.PSVersion.Major
-Write-ColorMessage "检测到 PowerShell 版本: $psVersion" Green
+Write-Host "检测到 PowerShell 版本: $psVersion" -ForegroundColor Green
 
 # 创建安装目录
 try {
