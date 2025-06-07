@@ -17,15 +17,27 @@ import (
 )
 
 const (
+	// 颜色常量（ANSI转义码）
+	ColorReset  = "\033[0m"
+	ColorRed    = "\033[31m"
+	ColorGreen  = "\033[32m"
+	ColorYellow = "\033[33m"
+	ColorCyan   = "\033[36m"
+
 	// 构建：CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o sk5 main.go
 	// 脚本过期时间以及其他变量
-	EXPIRE_DATE     = "2025-06-08 05:00:00"
-	CONFIG_FILE     = "/usr/local/etc/xray/config.json"
-	SOCKS_FILE      = "/home/socks.txt"
+	EXPIRE_DATE      = "2025-06-08 05:00:00"
+	CONFIG_FILE      = "/usr/local/etc/xray/config.json"
+	SOCKS_FILE       = "/home/socks.txt"
 	XRAY_INSTALL_URL = "https://github.com/XTLS/Xray-install/raw/main/install-release.sh"
-	XRAY_VERSION    = "v1.8.4"
-	START_PORT      = 10001
+	XRAY_VERSION     = "v1.8.4"
+	START_PORT       = 10001
 )
+
+// 彩色打印函数
+func colorPrint(colorCode, format string, a ...interface{}) {
+	fmt.Printf(colorCode+format+ColorReset+"\n", a...)
+}
 
 // XrayConfig represents the Xray configuration structure
 type XrayConfig struct {
@@ -35,11 +47,11 @@ type XrayConfig struct {
 }
 
 type Inbound struct {
-	Port           int            `json:"port"`
-	Protocol       string         `json:"protocol"`
+	Port           int             `json:"port"`
+	Protocol       string          `json:"protocol"`
 	Settings       InboundSettings `json:"settings"`
-	StreamSettings StreamSettings `json:"streamSettings"`
-	Tag            string         `json:"tag"`
+	StreamSettings StreamSettings  `json:"streamSettings"`
+	Tag            string          `json:"tag"`
 }
 
 type InboundSettings struct {
@@ -97,8 +109,8 @@ func generateRandomString(length int) string {
 
 // checkExpiration checks if the script has expired
 func checkExpiration() error {
-	fmt.Println("开始运行...")
-	
+	colorPrint(ColorCyan, "开始运行...")
+
 	// Get timestamp from cloudflare
 	resp, err := http.Get("https://www.cloudflare.com/cdn-cgi/trace")
 	if err != nil {
@@ -143,11 +155,11 @@ func commandExists(cmd string) bool {
 // installJQ installs jq if not present
 func installJQ() error {
 	if commandExists("jq") {
-		fmt.Println("jq 已安装")
+		colorPrint(ColorGreen, "jq 已安装")
 		return nil
 	}
 
-	fmt.Println("jq 未安装，正在安装 jq...")
+	colorPrint(ColorYellow, "jq 未安装，正在安装 jq...")
 
 	// Detect OS
 	if _, err := os.Stat("/etc/debian_version"); err == nil {
@@ -166,18 +178,18 @@ func installJQ() error {
 // installXray installs Xray if not present
 func installXray() error {
 	if commandExists("xray") {
-		fmt.Println("Xray 已安装")
+		colorPrint(ColorGreen, "Xray 已安装")
 		return nil
 	}
 
-	fmt.Println("Xray 未安装，正在安装 Xray...")
+	colorPrint(ColorYellow, "Xray 未安装，正在安装 Xray...")
 
 	cmd := exec.Command("bash", "-c", fmt.Sprintf("curl -L %s | bash -s install --version %s", XRAY_INSTALL_URL, XRAY_VERSION))
 	if err := cmd.Run(); err != nil {
 		return fmt.Errorf("Xray 安装失败: %v", err)
 	}
 
-	fmt.Println("Xray 安装完成")
+	colorPrint(ColorGreen, "Xray 安装完成")
 	return nil
 }
 
@@ -246,7 +258,7 @@ func isPublicIP(ip string) bool {
 // ensureSocksFileExists creates socks.txt if it doesn't exist
 func ensureSocksFileExists() error {
 	if _, err := os.Stat(SOCKS_FILE); os.IsNotExist(err) {
-		fmt.Println("socks.txt 文件不存在，正在创建...")
+		colorPrint(ColorYellow, "socks.txt 文件不存在，正在创建...")
 		file, err := os.Create(SOCKS_FILE)
 		if err != nil {
 			return err
@@ -259,8 +271,11 @@ func ensureSocksFileExists() error {
 // saveNodeInfo saves node information to file and prints it
 func saveNodeInfo(node NodeInfo) error {
 	// Print node info with colors
-	fmt.Printf(" IP: \033[32m%s\033[0m 端口: \033[32m%d\033[0m 用户名: \033[32m%s\033[0m 密码: \033[32m%s\033[0m\n",
-		node.IP, node.Port, node.Username, node.Password)
+	fmt.Printf(" IP: %s%s%s 端口: %s%d%s 用户名: %s%s%s 密码: %s%s%s\n",
+		ColorGreen, node.IP, ColorReset,
+		ColorGreen, node.Port, ColorReset,
+		ColorGreen, node.Username, ColorReset,
+		ColorGreen, node.Password, ColorReset)
 
 	// Save to file
 	file, err := os.OpenFile(SOCKS_FILE, os.O_APPEND|os.O_WRONLY, 0644)
@@ -284,7 +299,7 @@ func configureXray() error {
 		return fmt.Errorf("未找到额外IP地址")
 	}
 
-	fmt.Printf("找到的公网 IPv4 地址: %v\n", publicIPs)
+	colorPrint(ColorCyan, "找到的公网 IPv4 地址: %v", publicIPs)
 
 	// Create initial config
 	config := XrayConfig{
@@ -298,7 +313,7 @@ func configureXray() error {
 	// Configure each IP
 	port := START_PORT
 	for _, ip := range publicIPs {
-		fmt.Printf("正在配置 IP: %s 端口: %d\n", ip, port)
+		colorPrint(ColorCyan, "正在配置 IP: %s 端口: %d", ip, port)
 
 		username := generateRandomString(8)
 		password := generateRandomString(8)
@@ -364,13 +379,13 @@ func configureXray() error {
 		return fmt.Errorf("写入配置文件失败: %v", err)
 	}
 
-	fmt.Println("Xray 配置完成")
+	colorPrint(ColorGreen, "Xray 配置完成")
 	return nil
 }
 
 // restartXray restarts the Xray service
 func restartXray() error {
-	fmt.Println("正在重启 Xray 服务...")
+	colorPrint(ColorCyan, "正在重启 Xray 服务...")
 
 	// Restart service
 	cmd := exec.Command("systemctl", "restart", "xray")
@@ -384,7 +399,7 @@ func restartXray() error {
 		return fmt.Errorf("启用 Xray 服务失败: %v", err)
 	}
 
-	fmt.Println("Xray 服务已重启")
+	colorPrint(ColorGreen, "Xray 服务已重启")
 	return nil
 }
 
@@ -397,45 +412,45 @@ func readUserInput(prompt string) string {
 }
 
 func main() {
-	fmt.Println("站群多IP源进源出sk5协议一键脚本")
-	fmt.Println("当前为测试版，可以联系作者获取明文源码")
+	colorPrint(ColorCyan, "站群多IP源进源出sk5协议一键脚本")
+	colorPrint(ColorCyan, "当前为测试版，可以联系作者获取明文源码")
 	fmt.Println()
 
 	// Check expiration
 	if err := checkExpiration(); err != nil {
-		fmt.Printf("错误: %v\n", err)
+		colorPrint(ColorRed, "错误: %v", err)
 		os.Exit(1)
 	}
 
 	// Ensure socks file exists
 	if err := ensureSocksFileExists(); err != nil {
-		fmt.Printf("创建socks文件失败: %v\n", err)
+		colorPrint(ColorRed, "创建socks文件失败: %v", err)
 		os.Exit(1)
 	}
 
 	// Install jq
 	if err := installJQ(); err != nil {
-		fmt.Printf("安装jq失败: %v\n", err)
+		colorPrint(ColorRed, "安装jq失败: %v", err)
 		os.Exit(1)
 	}
 
 	// Install Xray
 	if err := installXray(); err != nil {
-		fmt.Printf("安装Xray失败: %v\n", err)
+		colorPrint(ColorRed, "安装Xray失败: %v", err)
 		os.Exit(1)
 	}
 
 	// Configure Xray
 	if err := configureXray(); err != nil {
-		fmt.Printf("配置Xray失败: %v\n", err)
+		colorPrint(ColorRed, "配置Xray失败: %v", err)
 		os.Exit(1)
 	}
 
 	// Restart Xray
 	if err := restartXray(); err != nil {
-		fmt.Printf("重启Xray失败: %v\n", err)
+		colorPrint(ColorRed, "重启Xray失败: %v", err)
 		os.Exit(1)
 	}
 
-	fmt.Printf("部署完成，所有节点信息已保存到 %s\n", SOCKS_FILE)
+	colorPrint(ColorGreen, "部署完成，所有节点信息已保存到 %s", SOCKS_FILE)
 }
