@@ -413,7 +413,7 @@ func readUserInput(prompt string) string {
 
 func main() {
 	colorPrint(ColorCyan, "站群多IP源进源出sk5协议一键脚本")
-	colorPrint(ColorCyan, "当前为测试版，可以联系作者获取明文源码")
+	colorPrint(ColorCyan, "当前为测试版，可以联系作者获取源码")
 	expireTime, err := time.ParseInLocation("2006-01-02 15:04:05", EXPIRE_DATE, time.FixedZone("CST", 8*3600))
 	if err == nil {
 		expireStr := fmt.Sprintf("%d年%d月%d日%d点%d分%d秒",
