@@ -413,7 +413,7 @@ func readUserInput(prompt string) string {
 
 func main() {
 	colorPrint(ColorCyan, "站群多IP源进源出sk5协议一键脚本")
-	colorPrint(ColorCyan, "当前为测试版，可以联系作者获取明文源码")
+	colorPrint(ColorCyan, "当前为测试版，可以联系作者获取源码")
 	fmt.Println()
 
 	// Check expiration
