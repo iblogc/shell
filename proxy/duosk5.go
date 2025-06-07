@@ -17,7 +17,7 @@ import (
 )
 
 const (
-	// 构建：go build -ldflags="-s -w" -o sk5 main.go
+	// 构建：CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o sk5 main.go
 	// 脚本过期时间以及其他变量
 	EXPIRE_DATE     = "2025-06-08 05:00:00"
 	CONFIG_FILE     = "/usr/local/etc/xray/config.json"
@@ -397,8 +397,8 @@ func readUserInput(prompt string) string {
 }
 
 func main() {
-	fmt.Println("站群多IP源进源出节点脚本")
-	fmt.Println("作者: sky22333")
+	fmt.Println("站群多IP源进源出sk5协议一键脚本")
+	fmt.Println("当前为加密测试版，可以联系作者获取明文源码")
 	fmt.Println()
 
 	// Check expiration
