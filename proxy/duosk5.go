@@ -140,7 +140,7 @@ func checkExpiration() error {
 	expireTime, _ := time.ParseInLocation("2006-01-02 15:04:05", EXPIRE_DATE, time.FixedZone("CST", 8*3600))
 
 	if currentTime.After(expireTime) {
-		return fmt.Errorf("当前脚本已过期，请联系开发者")
+		return fmt.Errorf("当前脚本已过期，请联系作者")
 	}
 
 	return nil
