@@ -398,7 +398,7 @@ func readUserInput(prompt string) string {
 
 func main() {
 	fmt.Println("站群多IP源进源出sk5协议一键脚本")
-	fmt.Println("当前为加密测试版，可以联系作者获取明文源码")
+	fmt.Println("当前为测试版，可以联系作者获取明文源码")
 	fmt.Println()
 
 	// Check expiration
