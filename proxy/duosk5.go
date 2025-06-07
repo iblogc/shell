@@ -26,7 +26,7 @@ const (
 
 	// 构建：CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o sk5 main.go
 	// 脚本过期时间以及其他变量
-	EXPIRE_DATE      = "2025-06-08 05:00:00"
+	EXPIRE_DATE      = "2025-06-08 02:01:01"
 	CONFIG_FILE      = "/usr/local/etc/xray/config.json"
 	SOCKS_FILE       = "/home/socks.txt"
 	XRAY_INSTALL_URL = "https://github.com/XTLS/Xray-install/raw/main/install-release.sh"
@@ -114,13 +114,13 @@ func checkExpiration() error {
 	// Get timestamp from cloudflare
 	resp, err := http.Get("https://www.cloudflare.com/cdn-cgi/trace")
 	if err != nil {
-		return fmt.Errorf("网络错误，无法获取时间: %v", err)
+		return fmt.Errorf("网络错误")
 	}
 	defer resp.Body.Close()
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return fmt.Errorf("读取响应失败: %v", err)
+		return fmt.Errorf("读取响应失败")
 	}
 
 	// Extract timestamp
@@ -132,7 +132,7 @@ func checkExpiration() error {
 
 	timestamp, err := strconv.ParseInt(matches[1], 10, 64)
 	if err != nil {
-		return fmt.Errorf("时间转换失败: %v", err)
+		return fmt.Errorf("时间转换失败")
 	}
 
 	// Convert to Beijing time
@@ -413,7 +413,20 @@ func readUserInput(prompt string) string {
 
 func main() {
 	colorPrint(ColorCyan, "站群多IP源进源出sk5协议一键脚本")
-	colorPrint(ColorCyan, "当前为测试版，可以联系作者获取源码")
+	colorPrint(ColorCyan, "当前为测试版，可以联系作者获取明文源码")
+	expireTime, err := time.ParseInLocation("2006-01-02 15:04:05", EXPIRE_DATE, time.FixedZone("CST", 8*3600))
+	if err == nil {
+		expireStr := fmt.Sprintf("%d年%d月%d日%d点%d分%d秒",
+			expireTime.Year(),
+			expireTime.Month(),
+			expireTime.Day(),
+			expireTime.Hour(),
+			expireTime.Minute(),
+			expireTime.Second())
+		colorPrint(ColorCyan, "脚本过期时间: %s", expireStr)
+	} else {
+		colorPrint(ColorYellow, "脚本过期时间解析失败")
+	}
 	fmt.Println()
 
 	// Check expiration
