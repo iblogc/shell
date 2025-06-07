@@ -102,7 +102,7 @@ func checkExpiration() error {
 	// Get timestamp from cloudflare
 	resp, err := http.Get("https://www.cloudflare.com/cdn-cgi/trace")
 	if err != nil {
-		return fmt.Errorf("网络错误，无法获取当前时间戳: %v", err)
+		return fmt.Errorf("网络错误，无法获取时间: %v", err)
 	}
 	defer resp.Body.Close()
 
@@ -115,12 +115,12 @@ func checkExpiration() error {
 	re := regexp.MustCompile(`ts=(\d+)`)
 	matches := re.FindStringSubmatch(string(body))
 	if len(matches) < 2 {
-		return fmt.Errorf("无法解析时间戳")
+		return fmt.Errorf("无法解析时间")
 	}
 
 	timestamp, err := strconv.ParseInt(matches[1], 10, 64)
 	if err != nil {
-		return fmt.Errorf("时间戳转换失败: %v", err)
+		return fmt.Errorf("时间转换失败: %v", err)
 	}
 
 	// Convert to Beijing time
