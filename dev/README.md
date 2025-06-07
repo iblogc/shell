@@ -53,3 +53,9 @@ bash <(curl -sSL https://github.com/sky22333/shell/raw/main/dev/cf-tunnel.sh)
 ```
 iwr -useb https://github.moeyy.xyz/https://raw.githubusercontent.com/sky22333/shell/main/dev/cf-setup.ps1 | iex
 ```
+
+
+- Android开发环境一键安装脚本
+```
+bash <(curl -sSL https://github.com/sky22333/shell/raw/main/dev/android.sh)
+```
