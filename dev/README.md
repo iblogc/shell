@@ -51,5 +51,5 @@ bash <(curl -sSL https://github.com/sky22333/shell/raw/main/dev/cf-tunnel.sh)
 
 - `win`系统`PowerShell`在线脚本，需要以管理员模式打开`PowerShell`
 ```
-iwr -useb https://github.moeyy.xyz/https://raw.githubusercontent.com/sky22333/shell/main/dev/cf-setup.ps1 | iex
+iwr -useb https://ghproxy.net/https://raw.githubusercontent.com/sky22333/shell/main/dev/cf-setup.ps1 | iex
 ```
