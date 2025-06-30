@@ -16,8 +16,8 @@
             /* 默认主题（白天模式） */
             --bg-color: #f5f5f5;
             --text-color: #333;
-            --header-bg: #2c3e50;
-            --header-text: white;
+            --header-bg: #fff;
+            --header-text: #333;
             --button-bg: #3498db;
             --button-hover: #2980b9;
             --editor-bg: #fff;
@@ -110,7 +110,7 @@
         }
 
         header h1 {
-            font-size: 1.5rem;
+            font-size: 1.1rem; /* 缩小标题字体 */
             margin: 0;
         }
 
@@ -214,6 +214,13 @@
         .editor-container {
             background-color: var(--editor-bg);
             border-right: 1px solid var(--border-color);
+            border-radius: 0;
+            padding: 1rem;
+        }
+
+        .preview-container {
+            background-color: var(--editor-bg);
+            padding: 1rem;
         }
 
         #editor {
@@ -224,24 +231,21 @@
             font-family: 'Consolas', monospace;
             font-size: 16px;
             line-height: 1.6;
-            padding: 10px;
+            padding: 4px 10px; /* 上下内边距缩小 */
             outline: none;
             background-color: transparent;
             color: var(--text-color);
         }
 
-        .preview-container {
-            background-color: var(--editor-bg);
+        /* 缩小编辑区滚动条高度 */
+        #editor::-webkit-scrollbar {
+            height: 6px;
+            width: 0 !important;
+            background: transparent;
         }
-
-        main.preview-hidden .preview-container,
-        main.editor-hidden .editor-container {
-            display: none;
-        }
-
-        main.preview-hidden .editor-container,
-        main.editor-hidden .editor-container {
-            border-right: none;
+        #editor {
+            scrollbar-width: thin; /* Firefox */
+            -ms-overflow-style: none; /* IE 10+ */
         }
 
         .markdown-body {
@@ -261,6 +265,18 @@
         .markdown-body ul, .markdown-body ol { padding-left: 2em; margin-bottom: 1rem; }
         .markdown-body table { border-collapse: collapse; margin-bottom: 1rem; display: block; overflow: auto; width: 100%; }
         .markdown-body th, .markdown-body td { padding: 6px 13px; border: 1px solid var(--border-color); }
+
+        /* 滚动条样式去除，仅保留滚动功能 */
+        .editor-container::-webkit-scrollbar,
+        .preview-container::-webkit-scrollbar {
+            width: 0 !important;
+            background: transparent;
+        }
+        .editor-container,
+        .preview-container {
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE 10+ */
+        }
 
         @media (max-width: 768px) {
             header { flex-direction: column; gap: 1rem; }
