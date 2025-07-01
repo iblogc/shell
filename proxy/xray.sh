@@ -15,9 +15,9 @@ CONFIG_PATH="/usr/local/etc/xray/config.json"
 GH_PROXY="https://gh-proxy.com"
 
 show_help() {
-  echo "用法: $0 [-p <gh-proxy前缀>]"
-  echo "  -p    （可选）GitHub 文件加速前缀，如 https://gh-proxy.com/"
-  echo "  uninstall/remove  卸载 Xray 及所有相关文件和服务"
+  echo "用法: $0 [-p <gh-proxy前缀>] [-u|--uninstall]"
+  echo "  -p    （可选）GitHub 文件加速前缀，如 https://gh-proxy.com"
+  echo "  -u, --uninstall  卸载 Xray 及所有相关文件和服务"
   echo "此脚本会自动下载安装 Xray ${XRAY_VERSION}，并注册 systemd 服务。"
   exit 0
 }
@@ -35,6 +35,18 @@ while [[ $# -gt 0 ]]; do
       shift
       GH_PROXY="$1"
       ;;
+    -u|--uninstall)
+      echo "正在卸载 Xray ..."
+      systemctl stop xray 2>/dev/null
+      systemctl disable xray 2>/dev/null
+      rm -f /usr/local/bin/xray
+      rm -rf /usr/local/etc/xray
+      rm -f /etc/systemd/system/xray.service
+      rm -rf /var/log/xray
+      systemctl daemon-reload
+      echo "Xray 及相关文件已卸载。"
+      exit 0
+      ;;
     -h|--help)
       show_help
       ;;
@@ -44,20 +56,6 @@ while [[ $# -gt 0 ]]; do
   esac
   shift
 done
-
-# 检查是否为卸载操作
-if [[ "$1" == "uninstall" || "$1" == "remove" ]]; then
-  echo "正在卸载 Xray ..."
-  systemctl stop xray 2>/dev/null
-  systemctl disable xray 2>/dev/null
-  rm -f /usr/local/bin/xray
-  rm -rf /usr/local/etc/xray
-  rm -f /etc/systemd/system/xray.service
-  rm -rf /var/log/xray
-  systemctl daemon-reload
-  echo "Xray 及相关文件已卸载。"
-  exit 0
-fi
 
 # 自动安装依赖（curl 和 unzip）
 install_pkg() {
