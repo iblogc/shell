@@ -12,7 +12,7 @@ SERVICE_PATH="/etc/systemd/system/xray.service"
 CONFIG_PATH="/usr/local/etc/xray/config.json"
 
 # github文件加速前缀
-GH_PROXY="https://gh-proxy.com/"
+GH_PROXY="https://gh-proxy.com"
 
 show_help() {
   echo "用法: $0 [-p <gh-proxy前缀>]"
