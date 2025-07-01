@@ -6,7 +6,7 @@
 # 仅适用于 Linux 系统，需 root 权限
 
 XRAY_VERSION="v1.8.4"
-XRAY_BIN_URL="github.com/XTLS/Xray-core/releases/download/${XRAY_VERSION}/Xray-linux-$(uname -m).zip"
+XRAY_BIN_URL="github.com/XTLS/Xray-core/releases/download/${XRAY_VERSION}/Xray-linux-64.zip"
 INSTALL_PATH="/usr/local/bin/xray"
 SERVICE_PATH="/etc/systemd/system/xray.service"
 CONFIG_PATH="/usr/local/etc/xray/config.json"
