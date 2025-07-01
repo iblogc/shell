@@ -80,7 +80,7 @@ check_existing_nodes() {
 }
 
 get_public_ipv4() {
-    ip -4 addr show | grep inet | grep -vE "127\.|10\.|172\.(1[6-9]|2[0-9]|3[0-1])\.|192\.168\.|169\.254" | awk '{print $2}' | cut -d'/' -f1
+    ip -4 addr show | awk '/inet / {ip = $2; sub(/\/.*/, "", ip); if (ip !~ /^127\./ && ip !~ /^10\./ && ip !~ /^192\.168\./ && ip !~ /^169\.254\./ && ip !~ /^172\.(1[6-9]|2[0-9]|3[0-1])\./) print ip}'
 }
 
 # 获取已配置的IP列表
