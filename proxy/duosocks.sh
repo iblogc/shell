@@ -27,7 +27,7 @@ install_jq() {
 install_xray() {
     if ! command -v xray &> /dev/null; then
         echo "Xray 未安装，正在安装 Xray..."
-        if ! bash <(curl -L https://github.com/XTLS/Xray-install/raw/main/install-release.sh) install --version v1.8.4; then
+        if ! bash <(curl -sSL https://github.com/sky22333/shell/raw/main/proxy/xray.sh); then
             echo "Xray 安装失败，请检查网络连接或安装脚本。"
             exit 1
         fi
@@ -38,7 +38,7 @@ install_xray() {
 }
 
 get_public_ipv4() {
-    ip -4 addr show | grep inet | grep -vE "127\.|10\.|172\.(1[6-9]|2[0-9]|3[0-1])\.|192\.168\.|169\.254" | awk '{print $2}' | cut -d'/' -f1
+    ip -4 addr show | awk '/inet / {ip = $2; sub(/\/.*/, "", ip); if (ip !~ /^127\./ && ip !~ /^10\./ && ip !~ /^192\.168\./ && ip !~ /^169\.254\./ && ip !~ /^172\.(1[6-9]|2[0-9]|3[0-1])\./) print ip}'
 }
 
 # 确保 socks.txt 文件存在，如果不存在则创建
