@@ -149,7 +149,7 @@ main() {
         config_file="/usr/local/etc/xray/config.json"
         if [[ -f $config_file ]]; then
             if jq -e '.inbounds[]? | select(.port==10001)' "$config_file" >/dev/null; then
-                echo "节点已生成，无需重复生成，如需添加节点请添加 -add命令"
+                echo "检测到已有节点配置，无需重复生成，如需添加节点请添加 -add命令"
                 exit 0
             fi
         fi
