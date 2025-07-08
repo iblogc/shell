@@ -48,10 +48,14 @@ install_jq() {
 install_xray() {
     if ! command -v sing-box &> /dev/null; then
         echo "sing-box 未安装，正在安装 sing-box..."
-        if ! bash <(curl -Ls https://raw.githubusercontent.com/sky22333/xray-singbox/main/singbox/install.sh); then
-            echo "sing-box 安装失败，请检查网络连接或安装脚本。"
+        VERSION="1.11.5"
+        curl -Lo sing-box.deb "https://github.com/SagerNet/sing-box/releases/download/v${VERSION}/sing-box_${VERSION}_linux_amd64.deb"
+        if ! dpkg -i sing-box.deb; then
+            echo "sing-box 安装失败，请检查dpkg输出。"
+            rm -f sing-box.deb
             exit 1
         fi
+        rm -f sing-box.deb
         echo "sing-box 安装完成。"
     else
         echo "sing-box 已安装。"
