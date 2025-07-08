@@ -71,15 +71,13 @@ check_existing_nodes() {
         return 1
     fi
     
-    # 检查inbounds数量是否大于0
-    local inbounds_count=$(jq '.inbounds | length' "$config_file" 2>/dev/null)
-    
-    # 如果jq命令失败或inbounds为空，则认为没有节点配置
-    if [ -z "$inbounds_count" ] || [ "$inbounds_count" -eq 0 ]; then
+    # 检查 route.rules 数组数量是否大于等于2
+    local rules_count=$(jq '.route.rules | length' "$config_file" 2>/dev/null)
+    # 如果jq命令失败或rules为空或小于2，则认为没有足够节点配置
+    if [ -z "$rules_count" ] || [ "$rules_count" -lt 2 ]; then
         return 1
     fi
-    
-    # 有节点配置
+    # 有2个及以上路由规则，视为已有节点配置
     return 0
 }
 
